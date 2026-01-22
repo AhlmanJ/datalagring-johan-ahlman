@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="EducationPlatform.Application/EducationPlatform.Application.csproj" />
+  <Project Path="EducationPlatform.Domain/EducationPlatform.Domain.csproj" />
+  <Project Path="EducationPlatform.Infrastructure/EducationPlatform.Infrastructure.csproj" />
+  <Project Path="EducationPlatform.Tests/EducationPlatform.Tests.csproj" />
+  <Project Path="Presentation.WebApi/EducationPlatform.Presentation.WebApi.csproj" />
+</Solution>
