@@ -6,11 +6,10 @@ public class LessonsEntity
 {
     [Key] // [Key] is not needed if the property are named Id. But i have choosen to use it anyway, for learning.
     public Guid Id { get; set; }
+    public string Name { get; set; } = null!;
     public DateTime StartDate { get; set; } 
     public DateTime EndDate { get; set; }
     public int MaxCapacity { get; set; }
-
-
     public Guid CourseId { get; set; }
     public virtual CoursesEntity Course { get; set; } = null!;
 

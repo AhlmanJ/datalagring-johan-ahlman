@@ -1,4 +1,7 @@
-﻿using EducationPlatform.Domain.Entities;
+﻿
+// I got help from chatGPT on how I could preset ready-made statuses for whether a participant is already booked for a lesson or not.
+
+using EducationPlatform.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EducationPlatform.Infrastructure.Data;
@@ -182,6 +185,10 @@ public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatfor
             .IsRowVersion()
             .IsConcurrencyToken()
             .IsRequired();
+
+            entity.HasIndex(e => e.Email, "UQ_Participants_Email").IsUnique();
+
+            entity.ToTable(tb => tb.HasCheckConstraint("CK_Participants_Email_NotEmpty", "LTRIM(RTRIM([Email])) <> ''"));
         });
 
         modelBuilder.Entity<InstructorsEntity>() // Use simple "join" as i don't have extra data.
@@ -197,6 +204,10 @@ public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatfor
             entity.Property(e => e.Id)
             .ValueGeneratedOnAdd()
             .HasDefaultValueSql("(NEWSEQUENTIALID())", "DF_Lessons_Id");
+
+            entity.Property(e => e.Name)
+            .HasMaxLength(200)
+            .IsRequired();
 
             entity.Property(e => e.StartDate)
             .HasPrecision(0)
@@ -265,6 +276,13 @@ public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatfor
             .IsRowVersion()
             .IsConcurrencyToken()
             .IsRequired();
+
+            // Help by chatGPT.
+
+            entity.HasData(
+                new StatusEntity { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), Status = "Unbooked" },
+                new StatusEntity { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), Status = "Booked" }
+            );
         });
     }
 }
