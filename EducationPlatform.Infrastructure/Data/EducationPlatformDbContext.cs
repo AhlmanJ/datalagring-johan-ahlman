@@ -1,5 +1,8 @@
-﻿
-// I got help from chatGPT on how I could preset ready-made statuses for whether a participant is already booked for a lesson or not.
+﻿/*
+ * I got help from chatGPT on how I could preset ready-made statuses for whether a participant is already booked for a lesson or not.
+ * ChatGPT also helped me discover an error in the "InstructorsEntity".
+ * The error was that I had copied a piece of code from my code that I had written for the "PracticipantsEntity" but forgot to change the name.
+*/
 
 using EducationPlatform.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -186,9 +189,11 @@ public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatfor
             .IsConcurrencyToken()
             .IsRequired();
 
-            entity.HasIndex(e => e.Email, "UQ_Participants_Email").IsUnique();
 
-            entity.ToTable(tb => tb.HasCheckConstraint("CK_Participants_Email_NotEmpty", "LTRIM(RTRIM([Email])) <> ''"));
+            // Changed in later branch: I had copied the code snippet from "ParticipantsEntity" but forgot to rename them to "Instructor".
+            entity.HasIndex(e => e.Email, "UQ_InstructorsEntity_Email").IsUnique();
+
+            entity.ToTable(tb => tb.HasCheckConstraint("CK_Instructors_Email_NotEmpty", "LTRIM(RTRIM([Email])) <> ''"));
         });
 
         modelBuilder.Entity<InstructorsEntity>() // Use simple "join" as i don't have extra data.
