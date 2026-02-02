@@ -10,4 +10,5 @@ public class StatusEntity
     public byte[] Concurrency { get; set; } = null!;
 
     public virtual ICollection<EnrollmentsEntity> Enrollments { get; set; } = []; // Can have MANY enrollments.
+
 }
