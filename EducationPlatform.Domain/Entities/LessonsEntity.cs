@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EducationPlatform.Domain.Middlewares;
+using System.ComponentModel.DataAnnotations;
 
 namespace EducationPlatform.Domain.Entities;
 
@@ -22,4 +23,32 @@ public class LessonsEntity
     public virtual ICollection<EnrollmentsEntity> Enrollments { get; set; } = [];
 
     public virtual ICollection<InstructorsEntity> Instructors { get; set; } = [];
+
+
+    public LessonsEntity() { }
+
+    public LessonsEntity(string name, DateTime startdate, DateTime enddate, int maxcapacity)
+    {
+        ValidateName(name);
+        ValidateDate(startdate, enddate);
+        ValidateCapacity(maxcapacity);
+    }
+
+    public void ValidateName(string name) 
+    { 
+        if (string.IsNullOrEmpty(name))
+            throw new DomainException("name");
+    }
+
+    public void ValidateDate(DateTime startdate, DateTime enddate)
+    {
+        if (startdate > enddate)
+            throw new DomainException("The Start date cannot be after End date");
+    }
+
+    public void ValidateCapacity(int maxcapacity)
+    {
+        if (maxcapacity < 1)
+            throw new DomainException("Maxcapacity must be grater than 0");
+    }
 }
