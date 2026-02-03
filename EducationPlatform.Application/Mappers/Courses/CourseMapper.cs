@@ -23,7 +23,7 @@ public static class CourseMapper
         => new CoursesEntity
         {
             Name = dto.Name,
-            Description = dto.Description,
+            Description = dto.Description
         };
 
     // Updates an entity. This code also makes it possible to partially update an entity.
