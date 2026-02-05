@@ -93,7 +93,7 @@ public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatfor
             .ValueGeneratedOnAdd()
             .HasDefaultValueSql("(NEWSEQUENTIALID())", "DF_Phonenumbers_Id");
 
-            entity.Property(e => e.PhoneNumber)
+            entity.Property(e => e.Phonenumber)
             .HasMaxLength(20)
             .IsUnicode(false);
 

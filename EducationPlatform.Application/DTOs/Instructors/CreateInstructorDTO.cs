@@ -10,5 +10,6 @@ public sealed record CreateInstructorDTO
         // RegularExpression from ChatGPT.
         [Required]
         [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email is invalid")]
-        string Email
+        string Email,
+        List<string>? Subject = null
     );

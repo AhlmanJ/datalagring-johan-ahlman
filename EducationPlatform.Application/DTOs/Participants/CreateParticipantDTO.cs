@@ -4,5 +4,6 @@ public sealed record CreateParticipantDTO
     (
         string FirstName,
         string LastName,
-        string Email
+        string Email,
+        List<string>? Phonenumber = null
     );

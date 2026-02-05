@@ -7,5 +7,6 @@ public sealed record InstructorResponseDTO
         Guid Id,
         string FirstName,
         string LastName,
-        string Email
+        string Email,
+        IReadOnlyList<string>? Subject = null
     );

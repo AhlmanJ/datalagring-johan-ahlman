@@ -21,6 +21,8 @@ public static class LessonMapper
             Name: entity.Name,
             StartDate: entity.StartDate,
             EndDate: entity.EndDate,
+            CourseId: entity.CourseId,
+            CourseName: entity.Course.Name,
             MaxCapacity: entity.MaxCapacity,
 
             /*

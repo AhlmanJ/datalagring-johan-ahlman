@@ -1,6 +1,6 @@
-﻿namespace EducationPlatform.Application.DTOs.PhoneNumbers;
+﻿namespace EducationPlatform.Application.DTOs.Phonenumbers;
 
-public sealed record CreatePhoneNumberDTO
+public sealed record CreatePhonenumberDTO
 (
-    string PhoneNumber
+    string Phonenumber
 );
