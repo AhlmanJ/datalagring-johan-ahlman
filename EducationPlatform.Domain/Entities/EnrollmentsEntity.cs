@@ -8,11 +8,11 @@ public class EnrollmentsEntity
     public Guid Id { get; set; }
     public Guid ParticipantId { get; set; }
     public Guid LessonsId { get; set; }
+    public virtual LessonsEntity Lesson { get; set; } = null!;
     public byte[] Concurrency { get; set; } = null!;
     public DateTime EnrollmentDate { get; set; }
 
     public Guid StatusId { get; set; }
     public StatusEntity Status { get; set; } = null!;
-
 }
 

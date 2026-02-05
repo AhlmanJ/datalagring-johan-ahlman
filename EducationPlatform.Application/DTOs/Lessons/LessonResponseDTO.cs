@@ -9,7 +9,9 @@ public sealed record LessonResponseDTO
         string Name,
         DateTime StartDate, 
         DateTime EndDate, 
-        int MaxCapacity, 
+        int MaxCapacity,
+        Guid CourseId,
+        string CourseName,
         LocationResponseDTO Location,
         List<InstructorResponseDTO> Instructors
     );

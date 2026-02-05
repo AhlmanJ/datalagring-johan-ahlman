@@ -14,7 +14,4 @@ public interface IEnrollmentRepository : IBaseRepository<EnrollmentsEntity>
     Task<EnrollmentsEntity?> GetAsync(Guid participantId, Guid lessonId, CancellationToken cancellationToken); // Get enrollment for a specific participant in a lesson.
     Task<IReadOnlyList<EnrollmentsEntity>> GetByParticipantAsync(Guid participantId, CancellationToken cancellationToken); // Get all enrollments for a specific participant by ID.
     Task<IReadOnlyList<EnrollmentsEntity>> GetByLessonAsync(Guid lessonId, CancellationToken cancellationToken); // Get all enrollments for a specific lesson by ID.
-    Task<bool> ExistsAsync (Guid participantId, Guid lessonId, CancellationToken cancellationToken); // Check if a participant is allready booked on a lesson. 
-    Task<EnrollmentsEntity> AddAsync(EnrollmentsEntity enrollment, CancellationToken cancellationToken); // Add a participant to a lesson.
-    Task DeleteAsync(EnrollmentsEntity enrollment, CancellationToken cancellationToken); // Remove a participant from a lesson.
 }

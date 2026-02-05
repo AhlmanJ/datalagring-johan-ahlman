@@ -1,20 +1,20 @@
-﻿using EducationPlatform.Application.DTOs.PhoneNumbers;
+﻿using EducationPlatform.Application.DTOs.Phonenumbers;
 using EducationPlatform.Domain.Entities;
 
 namespace EducationPlatform.Application.Mappers.Phonenumbers;
 
 public static class PhoneNumberMapper
 {
-    public static PhoneNumberResponseDTO ToDTO(PhonenumbersEntity entity)
-        => new PhoneNumberResponseDTO
+    public static PhonenumberResponseDTO ToDTO(PhonenumbersEntity entity)
+        => new PhonenumberResponseDTO
         (
             Id: entity.Id,
-            PhoneNumber: entity.PhoneNumber
+            Phonenumber: entity.Phonenumber
         );
 
-    public static PhonenumbersEntity ToDTO(CreatePhoneNumberDTO dto)
+    public static PhonenumbersEntity ToDTO(CreatePhonenumberDTO dto)
         => new PhonenumbersEntity
         { 
-            PhoneNumber = dto.PhoneNumber
+            Phonenumber = dto.Phonenumber
         };
 }

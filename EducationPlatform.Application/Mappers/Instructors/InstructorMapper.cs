@@ -1,5 +1,4 @@
 ﻿using EducationPlatform.Application.DTOs.Instructors;
-using EducationPlatform.Application.Mappers.Expertises;
 using EducationPlatform.Domain.Entities;
 
 namespace EducationPlatform.Application.Mappers.Instructors;
@@ -12,7 +11,12 @@ public static class InstructorMapper
           Id: entity.Id,
           FirstName: entity.FirstName!,
           LastName: entity.LastName!,
-          Email: entity.Email!
+          Email: entity.Email!,
+          Subject: entity.Expertises != null && entity.Expertises.Any() // With support from chatGPT as I mentioned in ParticipantMapper.
+            ? entity.Expertises
+            .Where(e => !string.IsNullOrEmpty(e.Subject))
+            .Select(e => e.Subject!)
+            .ToList() : null
        );
 
     public static InstructorsEntity ToEntity(CreateInstructorDTO dto)

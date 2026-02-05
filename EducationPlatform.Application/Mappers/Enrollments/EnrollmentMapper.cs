@@ -12,6 +12,7 @@ public static class EnrollmentMapper
             Id: entity.Id,
             ParticipantId: entity.ParticipantId,
             LessonId: entity.LessonsId,
+            LessonName: entity.Lesson.Name,
             EnrollmentDate: entity.EnrollmentDate,
             entity.Status.Status
          );

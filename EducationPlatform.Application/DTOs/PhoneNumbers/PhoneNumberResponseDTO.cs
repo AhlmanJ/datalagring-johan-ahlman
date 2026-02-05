@@ -1,7 +1,7 @@
-﻿namespace EducationPlatform.Application.DTOs.PhoneNumbers;
+﻿namespace EducationPlatform.Application.DTOs.Phonenumbers;
 
-public sealed record PhoneNumberResponseDTO
+public sealed record PhonenumberResponseDTO
 (
     Guid Id,
-    string PhoneNumber
+    string Phonenumber
 );

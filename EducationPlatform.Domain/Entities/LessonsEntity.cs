@@ -11,12 +11,9 @@ public class LessonsEntity
     public DateTime StartDate { get; set; } 
     public DateTime EndDate { get; set; }
     public int MaxCapacity { get; set; }
-
     public Guid CourseId { get; set; } // FK
     public virtual CoursesEntity Course { get; set; } = null!; // Navigation property
-
     public byte[] Concurrency { get; set; } = null!;
-
     public Guid LocationId { get; set; } // FK
     public virtual LocationsEntity Location { get; set; } = null!; // Navigation property
 
