@@ -47,13 +47,17 @@ public static class LessonMapper
                 .ToList() ?? new List<InstructorResponseDTO>()
         );
 
-        public static LessonsEntity ToEntity(CreateLessonDTO dto)
-            => new LessonsEntity
-            {
-                Name = dto.Name,
-                StartDate = dto.StartDate,
-                EndDate = dto.EndDate,
-                MaxCapacity = dto.MaxCapacity
-            };
+    public static LessonsEntity ToEntity(CreateLessonDTO dto)   
+    {
+        var lesson = new LessonsEntity
+        (
+            dto.Name,
+            dto.StartDate,
+            dto.EndDate,
+            dto.MaxCapacity
+        );
+
+        return lesson;
+    }
 
 }

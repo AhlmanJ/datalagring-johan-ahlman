@@ -3,7 +3,7 @@ using EducationPlatform.Domain.Entities;
 
 namespace EducationPlatform.Application.Mappers.Phonenumbers;
 
-public static class PhoneNumberMapper
+public static class PhonenumberMapper
 {
     public static PhonenumberResponseDTO ToDTO(PhonenumbersEntity entity)
         => new PhonenumberResponseDTO
@@ -12,9 +12,13 @@ public static class PhoneNumberMapper
             Phonenumber: entity.Phonenumber
         );
 
-    public static PhonenumbersEntity ToDTO(CreatePhonenumberDTO dto)
-        => new PhonenumbersEntity
-        { 
-            Phonenumber = dto.Phonenumber
-        };
+    public static PhonenumbersEntity ToEntity(CreatePhonenumberDTO dto)
+    {
+        var phonenumber = new PhonenumbersEntity
+            (
+                dto.Phonenumber
+            );
+
+        return phonenumber;
+    }
 }

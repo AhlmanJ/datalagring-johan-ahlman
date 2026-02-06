@@ -13,13 +13,19 @@ public static class LocationMapper
         );
 
     public static LocationsEntity ToEntity(CreateLocationDTO dto)
-            => new LocationsEntity
-            {
-                Name = dto.Name
-            };
+    {
+        var locationName = new LocationsEntity
+            (
+                dto.Name
+            );
+
+        return locationName;
+    }
 
     public static void UpdateEntity(LocationsEntity entity, UpdateLocationDTO dto)
     {
+        entity.Id = dto.Id;
+
         if (dto.Name is not null)
         {
             entity.Name = dto.Name;

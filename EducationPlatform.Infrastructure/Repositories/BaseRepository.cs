@@ -27,7 +27,6 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken)
     {
         _table.Remove(entity);
-        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public virtual async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> findBy, CancellationToken cancellationToken)
@@ -42,7 +41,6 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         return await _table
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
-
     }
 
     public virtual async Task<TEntity?> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
@@ -51,7 +49,6 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
             throw new ArgumentNullException(nameof(entity));
 
         _table.Update(entity);
-        await _context.SaveChangesAsync(cancellationToken);
         return entity;
     }
 }
