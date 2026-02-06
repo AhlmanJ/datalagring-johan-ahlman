@@ -15,11 +15,13 @@ public static class ParticipantMapper
             FirstName: entity.FirstName,
             LastName: entity.LastName,
             Email: entity.Email,
+
             entity.Phonenumbers != null
             ? entity.Phonenumbers
             .Where(e => !string.IsNullOrEmpty(e.Phonenumber))
             .Select(e => e.Phonenumber!)
             .ToList() : null,
+
             entity.Enrollments != null
             ? entity.Enrollments
             .Select(e => e.Status.Status!)
@@ -28,20 +30,27 @@ public static class ParticipantMapper
 
     //Here I got help from ChatGPT on how to enable a user to add phone numbers to a Participant.
     public static ParticipantsEntity ToEntity(CreateParticipantDTO dto)
-        => new ParticipantsEntity
-        {
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            Email = dto.Email,
-            Phonenumbers = dto.Phonenumber != null // Checks if the DTO has a phone number or if it is Null.
-            ? dto.Phonenumber!
-            .Where(Phonenumbers => !string.IsNullOrEmpty(Phonenumbers))
-            .Select(Phonenumbers => new PhonenumbersEntity { Phonenumber = Phonenumbers }) // for each string in the list, a new entity PhonenumbersEntity is created
-            .ToList() : new List<PhonenumbersEntity>() // Convert what we get from .Select into a List
-        };
+    {
+        var participant = new ParticipantsEntity
+            (
+                dto.FirstName,
+                dto.LastName,
+                dto.Email
+            );
+
+        participant.Phonenumbers = dto.Phonenumber != null // Checks if the DTO has a phone number or if it is Null.
+                ? dto.Phonenumber!
+                .Where(Phonenumbers => !string.IsNullOrEmpty(Phonenumbers))
+                .Select(Phonenumbers => new PhonenumbersEntity { Phonenumber = Phonenumbers }) // for each string in the list, a new entity PhonenumbersEntity is created
+                .ToList() : new List<PhonenumbersEntity>(); // Convert what we get from .Select into a List
+
+        return participant;
+    }
 
     public static void UpdateEntity(ParticipantsEntity entity, UpdateParticipantDTO dto)
     {
+        entity.Id = dto.Id;
+
         if (dto.FirstName is not null)
         {
             entity.FirstName = dto.FirstName;

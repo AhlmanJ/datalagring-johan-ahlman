@@ -1,5 +1,4 @@
 ﻿using EducationPlatform.Application.DTOs.Expertises;
-using EducationPlatform.Application.DTOs.Instructors;
 using EducationPlatform.Application.Mappers.Instructors;
 using EducationPlatform.Domain.Entities;
 

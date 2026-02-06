@@ -8,9 +8,9 @@ namespace EducationPlatform.Application.Mappers.Courses;
 
 public static class CourseMapper
 {
-    // Converts a Entity to a DTO.
+    // Converts a Entity to a DTO. ( By chatGPT )
     public static CourseResponseDTO ToDTO(CoursesEntity entity) 
-        => new CourseResponseDTO
+        => new CourseResponseDTO // Creates a new DTO with the properties declared in the method. (Only the properties needed for the response).
         (
            Id: entity.Id,
            Name: entity.Name,
@@ -20,11 +20,12 @@ public static class CourseMapper
 
     // From DTO to Entity.
     public static CoursesEntity ToEntity(CreateCourseDTO dto)
-        => new CoursesEntity
-        {
-            Name = dto.Name,
-            Description = dto.Description
-        };
+    {
+        var course = new CoursesEntity(dto.Name); // The properties that are required and that should be validated are set in the entity.
+        course.ValidateDescription(dto.Description); // Optional properties are run through their own validation method if entered from the frontend.
+
+        return course;
+    }
 
     // Updates an entity. This code also makes it possible to partially update an entity.
     public static void UpdateEntity(CoursesEntity entity, UpdateCourseDTO dto)

@@ -4,12 +4,13 @@
  * The error was that I had copied a piece of code from my code that I had written for the "PracticipantsEntity" but forgot to change the name.
 */
 
+using EducationPlatform.Application.Abstractions.Persistence;
 using EducationPlatform.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EducationPlatform.Infrastructure.Data;
 
-public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatformDbContext> options) : DbContext(options)
+public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatformDbContext> options) : DbContext(options), IUnitOfWork
 {
 
 
@@ -23,6 +24,12 @@ public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatfor
     public DbSet<ParticipantsEntity> Participants => Set<ParticipantsEntity>();
     public DbSet<PhonenumbersEntity> Phonenumbers => Set<PhonenumbersEntity>();
     public DbSet<StatusEntity> Status => Set<StatusEntity>();
+
+    // UnitOfWork-implementation (By ChatGPT)
+    public async Task CommitAsync(CancellationToken cancellationToken)
+    {
+        await base.SaveChangesAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

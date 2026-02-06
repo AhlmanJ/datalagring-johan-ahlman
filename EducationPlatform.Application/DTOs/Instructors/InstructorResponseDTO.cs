@@ -1,6 +1,4 @@
-﻿using EducationPlatform.Application.DTOs.Expertises;
-
-namespace EducationPlatform.Application.DTOs.Instructors;
+﻿namespace EducationPlatform.Application.DTOs.Instructors;
 
 public sealed record InstructorResponseDTO
     (
