@@ -10,7 +10,6 @@ public class PhonenumberRepository(EducationPlatformDbContext context) : BaseRep
     public async Task<IReadOnlyList<PhonenumbersEntity>> GetByParticipantAsync(Guid participantId, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .Where(p => p.ParticipantId == participantId)
             .ToListAsync(cancellationToken);
     }

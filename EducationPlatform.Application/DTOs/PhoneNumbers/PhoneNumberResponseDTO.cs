@@ -2,6 +2,6 @@
 
 public sealed record PhonenumberResponseDTO
 (
-    Guid Id,
+    string ParticipantEmail,
     string Phonenumber
 );

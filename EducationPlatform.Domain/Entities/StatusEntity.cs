@@ -6,7 +6,7 @@ public class StatusEntity
 {
     [Key]
     public Guid Id { get; set; }
-    public string Status { get; set; } = null!;
+    public string Status { get; set; } = string.Empty;
     public byte[] Concurrency { get; set; } = null!;
 
     public virtual ICollection<EnrollmentsEntity> Enrollments { get; set; } = []; // Can have MANY enrollments.

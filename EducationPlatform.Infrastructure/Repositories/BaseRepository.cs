@@ -38,6 +38,8 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
 
     public virtual async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNullOrEmpty("The list are empty.");
+
         return await _table
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);

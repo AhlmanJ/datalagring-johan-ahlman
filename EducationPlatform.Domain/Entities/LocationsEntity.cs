@@ -18,6 +18,8 @@ public class LocationsEntity
     public LocationsEntity(string name) 
     {
         ValidateName(name);
+
+        this.Name = name;
     }
 
     public void ValidateName(string name) 

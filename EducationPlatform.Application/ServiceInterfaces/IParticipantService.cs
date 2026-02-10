@@ -6,12 +6,12 @@ namespace EducationPlatform.Application.ServiceInterfaces;
 public interface IParticipantService
 {
     Task<ParticipantResponseDTO> CreateParticipantAsync(CreateParticipantDTO participantDTO, CancellationToken cancellationToken);
-    Task<ParticipantResponseDTO> UpdateParticipantAsync(UpdateParticipantDTO participantDTO, CancellationToken cancellationToken);
-    Task<ParticipantResponseDTO> GetParticipantByIdAsync(Guid id, CancellationToken cancellationToken);
-    Task<IReadOnlyList<ParticipantResponseDTO>> GetAllParticipantsAsync(CancellationToken cancellationToken);
-    Task DeleteParticipantAsync(string participantName ,CancellationToken cancellationToken);
+    Task<ParticipantResponseDTO> UpdateParticipantAsync(string email, UpdateParticipantDTO participantDTO, CancellationToken cancellationToken);
+    Task<ParticipantResponseDTO> GetParticipantByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<IReadOnlyList<AllParticipantsResponseDTO>> GetAllParticipantsAsync(CancellationToken cancellationToken);
+    Task<bool> DeleteParticipantAsync(string participantName ,CancellationToken cancellationToken);
 
 
     Task<PhonenumberResponseDTO> CreatePhonenumberToParticipantAsync(Guid participantId,CreatePhonenumberDTO phonenumberDTO ,CancellationToken cancellationToken);
-    Task DeletePhonenumberFromParticipantAsync(Guid participantId, Guid phonenumberId, CancellationToken cancellationToken);
+    Task<bool> DeletePhonenumberFromParticipantAsync(Guid participantId, Guid phonenumberId, CancellationToken cancellationToken);
 }

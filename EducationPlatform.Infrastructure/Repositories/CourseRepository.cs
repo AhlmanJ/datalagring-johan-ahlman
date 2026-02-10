@@ -10,14 +10,12 @@ public class CourseRepository(EducationPlatformDbContext context) : BaseReposito
     public async Task<CoursesEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
     }
 
     public async Task<CoursesEntity?> GetByNameAsync(string name, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Name == name, cancellationToken);
     }
 }

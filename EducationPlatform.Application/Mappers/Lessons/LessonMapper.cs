@@ -17,34 +17,12 @@ public static class LessonMapper
     public static LessonResponseDTO ToDTO(LessonsEntity entity)
         => new LessonResponseDTO
         (
-            Id: entity.Id,
             Name: entity.Name,
             StartDate: entity.StartDate,
             EndDate: entity.EndDate,
-            CourseId: entity.CourseId,
-            CourseName: entity.Course.Name,
             MaxCapacity: entity.MaxCapacity,
-
-            /*
-             * Maps LessonsEntity.Location to LocationResponseDTO and checks if a Location has been filled in when creating a lesson.
-             * If the user has filled in a location for the lesson event, they are inserted into Location. If the user has left these fields empty, a Null value is set.
-             */
-            Location: entity.Location != null
-                ? new LocationResponseDTO(entity.Location.Id, entity.Location.Name)
-                : null!,
-
-            /*
-             * Maps each instructor to a list, but if this field is left blank by a user, an empty list is created instead.
-             */
-            Instructors: entity.Instructors
-                .Select(i => new InstructorResponseDTO
-                    (
-                        Id: i.Id,
-                        FirstName: i.FirstName,
-                        LastName: i.LastName,
-                        Email: i.Email
-                    ))
-                .ToList() ?? new List<InstructorResponseDTO>()
+            CourseName: entity.Course?.Name ?? "",
+            Location: entity.Location.Name
         );
 
     public static LessonsEntity ToEntity(CreateLessonDTO dto)   
@@ -54,8 +32,11 @@ public static class LessonMapper
             dto.Name,
             dto.StartDate,
             dto.EndDate,
-            dto.MaxCapacity
+            dto.MaxCapacity,
+            dto.LocationName
         );
+
+        lesson.Location = new LocationsEntity(dto.LocationName);
 
         return lesson;
     }

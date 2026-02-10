@@ -5,24 +5,24 @@ namespace EducationPlatform.Application.Mappers.Enrollments;
 
 public static class EnrollmentMapper
 {
-
     public static EnrollmentResponseDTO ToDTO(EnrollmentsEntity entity)
         => new EnrollmentResponseDTO
          (
-            Id: entity.Id,
-            ParticipantId: entity.ParticipantId,
-            LessonId: entity.LessonsId,
+            FirstName: entity.Participant.FirstName,
+            LastName: entity.Participant.LastName,
+            Email: entity.Participant.Email,
             LessonName: entity.Lesson.Name,
+            LessonLocation: entity.Lesson.Location.Name,
             EnrollmentDate: entity.EnrollmentDate,
-            entity.Status.Status
+            StartDate: entity.Lesson.StartDate,
+            EndDate: entity.Lesson.EndDate,
+            Status: "Booked"
          );
 
     public static EnrollmentsEntity ToEntity(CreateEnrollmentDTO dto)
         => new EnrollmentsEntity
         {
             ParticipantId = dto.ParticipantId,
-            LessonsId = dto.LessonId,
-            StatusId = dto.StatusId,
-            EnrollmentDate = DateTime.UtcNow
+            LessonsId = dto.LessonsId
         };
 }

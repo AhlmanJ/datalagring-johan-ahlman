@@ -10,7 +10,6 @@ public class LocationRepository(EducationPlatformDbContext context) : BaseReposi
     public async Task<LocationsEntity?> GetByNameAsync(string name, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .FirstOrDefaultAsync(l => l.Name == name, cancellationToken);
     }
 }

@@ -10,18 +10,17 @@ public class ParticipantRepository(EducationPlatformDbContext context) : BaseRep
     public async Task<ParticipantsEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .Include(p => p.Phonenumbers)
             .Include(e => e.Enrollments)
-                .ThenInclude(s => s.Status)
             .FirstOrDefaultAsync(p => p.Email == email, cancellationToken);
     }
 
     public async Task<ParticipantsEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .Include(p => p.Phonenumbers)
+            .Include(e => e.Enrollments)
+                .ThenInclude(l => l.Lesson)
             .Include(e => e.Enrollments)
                 .ThenInclude(s => s.Status)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);

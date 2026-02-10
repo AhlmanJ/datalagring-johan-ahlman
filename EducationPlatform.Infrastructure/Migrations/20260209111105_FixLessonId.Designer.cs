@@ -4,6 +4,7 @@ using EducationPlatform.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationPlatform.Infrastructure.Migrations
 {
     [DbContext(typeof(EducationPlatformDbContext))]
-    partial class EducationPlatformDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260209111105_FixLessonId")]
+    partial class FixLessonId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,7 +72,7 @@ namespace EducationPlatform.Infrastructure.Migrations
                         .HasPrecision(0)
                         .HasColumnType("datetime2(0)");
 
-                    b.Property<Guid>("LessonsId")
+                    b.Property<Guid>("LessonId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ParticipantId")
@@ -81,7 +84,7 @@ namespace EducationPlatform.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK_Enrollments_Id");
 
-                    b.HasIndex("LessonsId");
+                    b.HasIndex("LessonId");
 
                     b.HasIndex("ParticipantId");
 
@@ -366,11 +369,11 @@ namespace EducationPlatform.Infrastructure.Migrations
                 {
                     b.HasOne("EducationPlatform.Domain.Entities.LessonsEntity", "Lesson")
                         .WithMany("Enrollments")
-                        .HasForeignKey("LessonsId")
+                        .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("EducationPlatform.Domain.Entities.ParticipantsEntity", "Participant")
+                    b.HasOne("EducationPlatform.Domain.Entities.ParticipantsEntity", null)
                         .WithMany("Enrollments")
                         .HasForeignKey("ParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -384,8 +387,6 @@ namespace EducationPlatform.Infrastructure.Migrations
 
                     b.Navigation("Lesson");
 
-                    b.Navigation("Participant");
-
                     b.Navigation("Status");
                 });
 
@@ -394,7 +395,7 @@ namespace EducationPlatform.Infrastructure.Migrations
                     b.HasOne("EducationPlatform.Domain.Entities.CoursesEntity", "Course")
                         .WithMany("Lessons")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EducationPlatform.Domain.Entities.LocationsEntity", "Location")

@@ -26,6 +26,10 @@ public class ParticipantsEntity
         ValidateEmail(email);
         ValidateFirstName(firstname);
         ValidateLastName(lastname);
+
+        this.Email = email;
+        this.FirstName = firstname;
+        this.LastName = lastname;
     }
 
     public void ValidateEmail(string email)
@@ -47,7 +51,7 @@ public class ParticipantsEntity
 
     public void ValidateLastName(string lastname)
     {
-        if (!string.IsNullOrWhiteSpace(lastname))
+        if (string.IsNullOrWhiteSpace(lastname))
             throw new DomainException("Last name is required");
     }
 }

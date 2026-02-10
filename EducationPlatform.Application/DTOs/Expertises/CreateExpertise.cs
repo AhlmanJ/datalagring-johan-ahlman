@@ -2,6 +2,5 @@
 
 public sealed record CreateExpertiseDTO
     (
-        string Subject,
-        List<Guid> InstructorId
+        string Subject
     );

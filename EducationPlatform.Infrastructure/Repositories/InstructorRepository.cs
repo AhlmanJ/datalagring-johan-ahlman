@@ -1,4 +1,7 @@
-﻿using EducationPlatform.Domain.Entities;
+﻿
+// I learned that only List and other "ReadOnly" methods should have "AsNoTracking()". I was having problems with my database not updating...
+
+using EducationPlatform.Domain.Entities;
 using EducationPlatform.Domain.Interfaces;
 using EducationPlatform.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,16 +13,16 @@ public class InstructorRepository(EducationPlatformDbContext context) : BaseRepo
     public async Task<InstructorsEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .Include(e => e.Expertises)
+            .Include(l => l.Lessons)
             .FirstOrDefaultAsync(i => i.Email == email, cancellationToken);
     }
 
     public async Task<InstructorsEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .Include(e => e.Expertises)
+            .Include(l => l.Lessons)
             .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
     }
 }

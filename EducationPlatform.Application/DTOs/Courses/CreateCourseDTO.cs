@@ -5,6 +5,5 @@ namespace EducationPlatform.Application.DTOs.Courses;
 public sealed record CreateCourseDTO
     (
         string Name,
-        string Description,
-        List<LessonResponseDTO>? Lessons = null
+        string Description
     );

@@ -134,12 +134,12 @@ public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatfor
             .IsRequired();
 
             // One-to-Many
-            entity.HasOne<ParticipantsEntity>()
+            entity.HasOne(e => e.Participant)
             .WithMany(p => p.Enrollments)
             .HasForeignKey(e => e.ParticipantId)
             .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne<LessonsEntity>()
+            entity.HasOne(e => e.Lesson)
             .WithMany(l => l.Enrollments)
             .HasForeignKey(e => e.LessonsId)
             .OnDelete(DeleteBehavior.Restrict);
@@ -244,7 +244,7 @@ public sealed class EducationPlatformDbContext(DbContextOptions<EducationPlatfor
             .HasOne(l => l.Course)
             .WithMany(c => c.Lessons)
             .HasForeignKey(l => l.CourseId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<LessonsEntity>()
             .HasOne(l => l.Location)
