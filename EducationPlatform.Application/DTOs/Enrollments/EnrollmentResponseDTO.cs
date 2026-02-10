@@ -2,10 +2,13 @@
 
 public sealed record EnrollmentResponseDTO
     (
-        Guid Id,
-        Guid ParticipantId,
-        Guid LessonId,
+        string FirstName,
+        string LastName,
+        string Email,
         string LessonName,
+        string LessonLocation,
         DateTime EnrollmentDate,
+        DateTime StartDate,
+        DateTime EndDate,
         string Status
     );

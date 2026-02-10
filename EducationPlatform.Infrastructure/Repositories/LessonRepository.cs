@@ -10,7 +10,6 @@ public class LessonRepository(EducationPlatformDbContext context) : BaseReposito
     public async Task<LessonsEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .Include(l => l.Location)
             .Include(c => c.Course)
             .Include(i => i.Instructors)
@@ -20,7 +19,6 @@ public class LessonRepository(EducationPlatformDbContext context) : BaseReposito
     public async Task<LessonsEntity?> GetByNameAsync(string name, CancellationToken cancellationToken)
     {
         return await _table
-            .AsNoTracking()
             .Include(l => l.Location)
             .Include(c => c.Course)
             .Include(i => i.Instructors)

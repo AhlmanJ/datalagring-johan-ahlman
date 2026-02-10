@@ -11,21 +11,27 @@ public static class ParticipantMapper
     public static ParticipantResponseDTO ToDTO(ParticipantsEntity entity)
         => new ParticipantResponseDTO
         (
-            Id: entity.Id,
             FirstName: entity.FirstName,
             LastName: entity.LastName,
             Email: entity.Email,
-
-            entity.Phonenumbers != null
+            Phonenumber: entity.Phonenumbers != null // When I tested the endpoint, if I added a phone number to the participant, it showed as registration status. This was because I had not specified "Phonenumber:" as the "identifier".
             ? entity.Phonenumbers
             .Where(e => !string.IsNullOrEmpty(e.Phonenumber))
             .Select(e => e.Phonenumber!)
             .ToList() : null,
 
-            entity.Enrollments != null
+            EnrollmentStatus: entity.Enrollments != null
             ? entity.Enrollments
             .Select(e => e.Status.Status!)
             .ToList() : null
+        );
+
+    public static AllParticipantsResponseDTO AllToDTO(ParticipantsEntity entity) 
+        => new AllParticipantsResponseDTO
+        (
+            FirstName: entity.FirstName,
+            LastName: entity.LastName,
+            Email: entity.Email
         );
 
     //Here I got help from ChatGPT on how to enable a user to add phone numbers to a Participant.

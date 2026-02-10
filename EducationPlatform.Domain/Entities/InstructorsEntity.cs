@@ -23,6 +23,10 @@ public class InstructorsEntity
         ValidateEmail(email);
         ValidateFirstName(firstname);
         ValidateLastName(lastname);
+
+        this.Email = email;
+        this.FirstName = firstname;
+        this.LastName = lastname;
     }
 
     public void ValidateEmail(string email) 
@@ -32,7 +36,7 @@ public class InstructorsEntity
 
         var EmailRegEx = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
 
-        if (!Regex.IsMatch(email, EmailRegEx))
+        if (Regex.IsMatch(email, EmailRegEx))
             throw new DomainException("Invalid Email, use name@example.com");
     }
 
@@ -44,7 +48,7 @@ public class InstructorsEntity
 
     public void ValidateLastName(string lastname)
     {
-        if (!string.IsNullOrWhiteSpace(lastname))
+        if (string.IsNullOrWhiteSpace(lastname))
             throw new DomainException("Last name is required");
     }
 }

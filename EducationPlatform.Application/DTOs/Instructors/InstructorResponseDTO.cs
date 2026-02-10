@@ -2,7 +2,6 @@
 
 public sealed record InstructorResponseDTO
     (
-        Guid Id,
         string FirstName,
         string LastName,
         string Email,

@@ -5,4 +5,6 @@ namespace EducationPlatform.Domain.Interfaces;
 public interface IExpertiseRepository : IBaseRepository<ExpertisesEntity>
 {
     Task<ExpertisesEntity?> GetBySubjectAsync(string subject, CancellationToken cancellationToken);
+
+    Task<ExpertisesEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 }

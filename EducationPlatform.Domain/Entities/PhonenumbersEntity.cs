@@ -18,6 +18,8 @@ public class PhonenumbersEntity
     public PhonenumbersEntity(string phonenumber) 
     {
         ValidatePhoneNumber(phonenumber);
+
+        this.Phonenumber = phonenumber;
     }
 
     public void ValidatePhoneNumber(string phonenumber)

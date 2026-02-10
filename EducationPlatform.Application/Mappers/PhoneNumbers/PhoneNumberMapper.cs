@@ -8,7 +8,7 @@ public static class PhonenumberMapper
     public static PhonenumberResponseDTO ToDTO(PhonenumbersEntity entity)
         => new PhonenumberResponseDTO
         (
-            Id: entity.Id,
+            ParticipantEmail: entity.Participant.Email,
             Phonenumber: entity.Phonenumber
         );
 

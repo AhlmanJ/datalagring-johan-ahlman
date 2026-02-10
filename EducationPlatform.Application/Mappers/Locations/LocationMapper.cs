@@ -8,7 +8,6 @@ public static class LocationMapper
     public static LocationResponseDTO ToDTO(LocationsEntity entity)
         => new LocationResponseDTO
         (
-            Id: entity.Id,
             Name: entity.Name
         );
 

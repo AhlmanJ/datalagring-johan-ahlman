@@ -24,11 +24,16 @@ public class LessonsEntity
 
     public LessonsEntity() { }
 
-    public LessonsEntity(string name, DateTime startdate, DateTime enddate, int maxcapacity)
+    public LessonsEntity(string name, DateTime startdate, DateTime enddate, int maxcapacity, string lessonname)
     {
         ValidateName(name);
         ValidateDate(startdate, enddate);
         ValidateCapacity(maxcapacity);
+
+        this.Name = name;
+        this.StartDate = startdate;
+        this.EndDate = enddate;
+        this.MaxCapacity = maxcapacity;
     }
 
     public void ValidateName(string name) 

@@ -11,16 +11,23 @@ public static class InstructorMapper
     public static InstructorResponseDTO ToDTO(InstructorsEntity entity)
        => new InstructorResponseDTO
        (
-          Id: entity.Id,
-          FirstName: entity.FirstName!,
-          LastName: entity.LastName!,
-          Email: entity.Email!,
+          FirstName: entity.FirstName,
+          LastName: entity.LastName,
+          Email: entity.Email,
           Subject: entity.Expertises != null && entity.Expertises.Any() // With support from chatGPT as I mentioned in ParticipantMapper.
             ? entity.Expertises
             .Where(e => !string.IsNullOrEmpty(e.Subject))
             .Select(e => e.Subject!)
             .ToList() : null
        );
+
+    public static AllInstructorsResponseDTO AllToDTO(InstructorsEntity entity)
+        => new AllInstructorsResponseDTO
+        (
+          Email: entity.Email,
+          FirstName: entity.FirstName,
+          LastName: entity.LastName
+        );
 
     public static InstructorsEntity ToEntity(CreateInstructorDTO dto)
     {
@@ -36,7 +43,7 @@ public static class InstructorMapper
 
     public static void UpdateEntity(InstructorsEntity entity, UpdateInstructorDTO dto)
     {
-        entity.Id = dto.Id;
+   
 
         if (dto.FirstName is not null)
         {

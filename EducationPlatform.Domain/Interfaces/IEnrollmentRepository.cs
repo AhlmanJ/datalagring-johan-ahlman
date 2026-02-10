@@ -11,7 +11,9 @@ namespace EducationPlatform.Domain.Interfaces;
 public interface IEnrollmentRepository : IBaseRepository<EnrollmentsEntity>
 {
     Task<EnrollmentsEntity?> GetByIdAsync(Guid enrollmentId, CancellationToken cancellationToken); // Get a specific Enrollment by ID.
-    Task<EnrollmentsEntity?> GetAsync(Guid participantId, Guid lessonId, CancellationToken cancellationToken); // Get enrollment for a specific participant in a lesson.
+    Task<EnrollmentsEntity?> GetAsync(Guid participantId, Guid lessonsId, CancellationToken cancellationToken); // Get enrollment for a specific participant in a lesson.
     Task<IReadOnlyList<EnrollmentsEntity>> GetByParticipantAsync(Guid participantId, CancellationToken cancellationToken); // Get all enrollments for a specific participant by ID.
     Task<IReadOnlyList<EnrollmentsEntity>> GetByLessonAsync(Guid lessonId, CancellationToken cancellationToken); // Get all enrollments for a specific lesson by ID.
+    Task<IReadOnlyList<EnrollmentsEntity>> GetAllEnrollmentsAsync(CancellationToken cancellationToken);
+
 }

@@ -2,6 +2,5 @@
 
 public sealed record LocationResponseDTO
     (
-        Guid Id,
         string Name
     );

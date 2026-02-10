@@ -25,6 +25,8 @@ public class CoursesEntity
     public CoursesEntity(string name)
     {
         ValidateName(name);
+
+        this.Name = name;
     }
 
     public void ValidateName(string name)
