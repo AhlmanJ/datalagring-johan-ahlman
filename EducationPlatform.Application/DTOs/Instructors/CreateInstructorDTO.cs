@@ -4,6 +4,5 @@ public sealed record CreateInstructorDTO
     (
         string FirstName,
         string LastName,
-        string Email,
-        List<string>? Subject = null
+        string Email
     );

@@ -21,6 +21,7 @@ public static class LessonMapper
             StartDate: entity.StartDate,
             EndDate: entity.EndDate,
             MaxCapacity: entity.MaxCapacity,
+            Enrolled: entity.NumberEnrolled,
             CourseName: entity.Course?.Name ?? "",
             Location: entity.Location.Name
         );
@@ -39,6 +40,41 @@ public static class LessonMapper
         lesson.Location = new LocationsEntity(dto.LocationName);
 
         return lesson;
+    }
+
+    public static UpdateLessonDTO UpdateLesson(LessonsEntity entity, UpdateLessonDTO dto)
+    {
+        if (dto.Name is not null)
+        {
+            entity.Name = dto.Name;
+        }
+
+        if (dto.StartDate != entity.StartDate)
+        { 
+            entity.StartDate = dto.StartDate;
+        }
+
+        if (dto.EndDate != entity.EndDate) 
+        {
+            entity.EndDate = dto.EndDate;
+        }
+
+        if (dto.MaxCapacity != entity.MaxCapacity)
+        {
+            entity.MaxCapacity = dto.MaxCapacity;
+        }
+
+        if (dto.CourseName is not null)
+        {
+            entity.Course.Name = dto.CourseName;
+        }
+
+        if (dto.Location!= entity.Location.Name)
+        {
+            entity.Location.Name = dto.Location;
+        }
+
+        return dto;
     }
 
 }

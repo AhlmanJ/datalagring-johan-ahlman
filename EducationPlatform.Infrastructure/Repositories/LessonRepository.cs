@@ -24,4 +24,14 @@ public class LessonRepository(EducationPlatformDbContext context) : BaseReposito
             .Include(i => i.Instructors)
             .FirstOrDefaultAsync(l => l.Name == name, cancellationToken);
     }
+
+    public async Task<IReadOnlyList<LessonsEntity>> GetAllByCourseIdAsync(Guid courseId, CancellationToken cancellationToken)
+    {
+        return await _table
+            .Include(c => c.Course)
+            .Include(l => l.Location)
+            .Include(i => i.Instructors)
+            .Where(c => c.CourseId == courseId)
+            .ToListAsync(cancellationToken);
+    }
 }

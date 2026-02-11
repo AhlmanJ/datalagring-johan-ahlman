@@ -38,7 +38,5 @@ public static class CourseMapper
         {
             entity.Description = dto.Description;
         }
-
-        entity.Concurrency = dto.Concurrency;
     }
 }

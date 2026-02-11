@@ -6,14 +6,20 @@ namespace EducationPlatform.Application.ServiceInterfaces;
 
 public interface ICourseService
 {
-    Task<CourseResponseDTO> CreateCourseAsync(CreateCourseDTO courseDTO, string Name, CancellationToken cancellationToken);
-    Task<CourseResponseDTO> UpdateCourseAsync(string Name, UpdateCourseDTO courseDTO, CancellationToken cancellationToken);
+    Task<CourseResponseDTO> CreateCourseAsync(CreateCourseDTO courseDTO, string name, CancellationToken cancellationToken);
+    Task<CourseResponseDTO> UpdateCourseAsync(string name, UpdateCourseDTO courseDTO, CancellationToken cancellationToken);
     Task<IReadOnlyList<CourseResponseDTO>> GetAllCoursesAsync(CancellationToken cancellationToken);
     Task<bool> DeleteCourseAsync(Guid id, CancellationToken cancellationToken);
 
+
+
     Task<LessonResponseDTO> CreateLessonToCourseAsync(Guid courseId, CreateLessonDTO lessonDTO, CancellationToken cancellationToken);
+    Task<IReadOnlyList<LessonResponseDTO>> GetAllLessonByCourseIdAsync(Guid courseId, CancellationToken cancellationToken);
+    Task<LessonResponseDTO> UpdateLessonAsync(string name, UpdateLessonDTO updateLessonDTO, CancellationToken cancellationToken);
     Task<bool> DeleteLessonFromCourseAsync(Guid courseId, Guid lessonId , CancellationToken cancellationToken);
 
-    Task<LocationResponseDTO> CreateLocationToCourseAsync(Guid courseId,string lessonName, CreateLocationDTO locationDTO, CancellationToken cancellationToken);
-    Task<bool> DeleteLocationFromCourseAsync(Guid courseId, string locationName, CancellationToken cancellationToken);
+
+
+    Task<IReadOnlyList<LocationResponseDTO>> GetAllLocationsAsync(CancellationToken cancellationToken);
+    Task<bool> DeleteLocationFromCourseAsync(string locationName, CancellationToken cancellationToken);
 }

@@ -1,4 +1,7 @@
-﻿using EducationPlatform.Application.Abstractions.Persistence;
+﻿
+// See notes in the code for "CreateExpertiseToInstructorAsync", row 91.
+
+using EducationPlatform.Application.Abstractions.Persistence;
 using EducationPlatform.Application.DTOs.Expertises;
 using EducationPlatform.Application.DTOs.Instructors;
 using EducationPlatform.Application.Mappers.Expertises;
@@ -30,6 +33,15 @@ public class InstructorService : IInstructorService
         return InstructorMapper.ToDTO(savedInstructor);
     }
 
+    public async Task<InstructorResponseDTO> GetInstructorByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        var instructor = await _instructorRepository.GetByEmailAsync(email, cancellationToken);
+        if (instructor == null) 
+            throw new ArgumentNullException("Could not find a Instructor with that Email address");
+
+        return InstructorMapper.ToDTO(instructor);
+    }
+
     public async Task<IReadOnlyList<AllInstructorsResponseDTO>> GetAllInstructorsAsync(CancellationToken cancellationToken)
     {
         var instructors = await _instructorRepository.GetAllAsync(cancellationToken);
@@ -40,6 +52,9 @@ public class InstructorService : IInstructorService
     {
         if(instructorDTO == null)
             throw new ArgumentNullException(nameof(instructorDTO));
+
+        if(id == Guid.Empty)
+            throw new ArgumentNullException(nameof(id));
 
         var instructorToUpdate = await _instructorRepository.GetByIdAsync(id, cancellationToken);
         if (instructorToUpdate == null)
@@ -73,9 +88,12 @@ public class InstructorService : IInstructorService
             throw new ArgumentNullException("The instructor does not exist.");
 
         var savedExpertise = ExpertiseMapper.ToEntity(expertiseDTO);
-        await _expertiseRepository.CreateAsync(savedExpertise, cancellationToken);
+        // Explained to me by chatGPT that EF Core needs to know the many-to-many relation. Otherwise the expertise will be created but not related to the instructor.
+        instructor.Expertises.Add(savedExpertise); // Adding the instructor to the expertise.
+        savedExpertise.Instructors.Add(instructor); // Adding the expertise to the instructor.
 
-        instructor.Expertises.Add(savedExpertise); // Explained to me by chatGPT that EF Core needs to know the many-to-many relation. Otherwise the expertise will be created but not related to the instructor.
+        // Deleted " await _expertiseRepository.CreateAsync(savedExpertise, cancellationToken); " Because i learned that EF Core keeps track on this throu the Join-Table.
+
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return ExpertiseMapper.ToDTO(savedExpertise);

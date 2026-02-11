@@ -41,8 +41,18 @@ public class EnrollmentService : IEnrollmentService
             throw new ArgumentNullException($"{lessonsId} does not exists.");
 
         var savedEnrollment = EnrollmentMapper.ToEntity(enrollmentDTO);
-        savedEnrollment.Participant = participant;
-        savedEnrollment.Lesson = lesson;
+
+        lesson.NumberEnrolled = lesson.NumberEnrolled + 1;
+        if (lesson.NumberEnrolled > lesson.MaxCapacity)
+            throw new ArgumentException("The lesson is fully booked. Please choose another lesson");
+
+        if (participant.IsEnrolled == true)
+            throw new ArgumentException("Participants is allready booked to lesson. Only one enrollment at once");
+
+        participant.IsEnrolled = true;
+
+        savedEnrollment.Participant = participant; // "Points" to navigation-property in EnrollmentsEntity.
+        savedEnrollment.Lesson = lesson; // "Points" to navigation-property in EnrollmentsEntity.
         savedEnrollment.Lesson.Location = lesson.Location;
         savedEnrollment.StatusId = Guid.Parse("22222222-2222-2222-2222-222222222222"); // I got help from chatGPT on how to override the status i the mapper and set the status "Booked" that i have in my DbContext.(I don't really need the status in the DTO if I do this.)
         savedEnrollment.EnrollmentDate = DateTime.UtcNow; // Make shure that the enrollment date is correct.
@@ -61,11 +71,23 @@ public class EnrollmentService : IEnrollmentService
         return enrollments.Select(EnrollmentMapper.ToDTO).ToList();
     }
 
-    public async Task<bool> DeleteEnrollmentAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<bool> DeleteEnrollmentAsync(Guid enrollmentId, string lessonName, Guid participantId, CancellationToken cancellationToken)
     {
-        var enrollmentToDelete = await _enrollmentRepository.GetByIdAsync(id, cancellationToken);
+        var enrollmentToDelete = await _enrollmentRepository.GetByIdAsync(enrollmentId, cancellationToken);
         if (enrollmentToDelete == null)
             return false;
+
+        var participant = await _participantRepository.GetByIdAsync(participantId, cancellationToken);
+        if (participant == null)
+            throw new ArgumentNullException(nameof(participant), "No participant found");
+
+        var lesson = await _lessonRepository.GetByNameAsync(lessonName, cancellationToken);
+        if (lesson == null)
+            return false;
+
+        lesson.NumberEnrolled--;
+        participant.IsEnrolled = false;
+        
 
         await _enrollmentRepository.DeleteAsync(enrollmentToDelete, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);

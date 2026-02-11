@@ -33,9 +33,9 @@ public static class InstructorMapper
     {
         var instructor = new InstructorsEntity
             (
+                dto.Email,
                 dto.FirstName,
-                dto.LastName,
-                dto.Email
+                dto.LastName
             );
 
         return instructor;

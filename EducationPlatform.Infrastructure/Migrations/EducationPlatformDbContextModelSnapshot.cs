@@ -186,6 +186,9 @@ namespace EducationPlatform.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int>("NumberEnrolled")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartDate")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(0)
@@ -248,6 +251,9 @@ namespace EducationPlatform.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsEnrolled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
