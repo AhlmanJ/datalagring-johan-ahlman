@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationPlatform.Infrastructure.Migrations
 {
     [DbContext(typeof(EducationPlatformDbContext))]
-    [Migration("20260210123817_ChangedOnDeleteBehavior")]
-    partial class ChangedOnDeleteBehavior
+    [Migration("20260211134608_AddedNewPropertyToParticipantsEntity")]
+    partial class AddedNewPropertyToParticipantsEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,6 +189,9 @@ namespace EducationPlatform.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int>("NumberEnrolled")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartDate")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(0)
@@ -251,6 +254,9 @@ namespace EducationPlatform.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsEnrolled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -370,19 +376,19 @@ namespace EducationPlatform.Infrastructure.Migrations
                     b.HasOne("EducationPlatform.Domain.Entities.LessonsEntity", "Lesson")
                         .WithMany("Enrollments")
                         .HasForeignKey("LessonsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EducationPlatform.Domain.Entities.ParticipantsEntity", "Participant")
                         .WithMany("Enrollments")
                         .HasForeignKey("ParticipantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EducationPlatform.Domain.Entities.StatusEntity", "Status")
                         .WithMany("Enrollments")
                         .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Lesson");

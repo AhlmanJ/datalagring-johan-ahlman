@@ -10,6 +10,7 @@ public class LessonsEntity
     public string Name { get; set; } = null!;
     public DateTime StartDate { get; set; } 
     public DateTime EndDate { get; set; }
+    public int NumberEnrolled { get; set; }
     public int MaxCapacity { get; set; }
     public Guid CourseId { get; set; } // FK
     public virtual CoursesEntity Course { get; set; } = null!; // Navigation property

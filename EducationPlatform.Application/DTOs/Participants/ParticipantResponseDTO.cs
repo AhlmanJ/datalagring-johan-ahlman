@@ -5,6 +5,5 @@ public sealed record ParticipantResponseDTO
         string FirstName,
         string LastName,
         string Email,
-        IReadOnlyList<string>? Phonenumber = null,
-        IReadOnlyList<string>? EnrollmentStatus = null
+        IReadOnlyList<string>? Phonenumber = null
     );

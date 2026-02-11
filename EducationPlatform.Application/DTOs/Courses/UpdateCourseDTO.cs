@@ -7,8 +7,6 @@ namespace EducationPlatform.Application.DTOs.Courses;
 
 public sealed record UpdateCourseDTO
     (
-        Guid Id,
-        byte[] Concurrency,
         string? Name = null!,
         string? Description = null!
     );

@@ -40,26 +40,29 @@ public class ParticipantService : IParticipantService
 
         var participant = await _participantRepository.GetByEmailAsync(email, cancellationToken);
         if (participant == null)
-            throw new ArgumentNullException(nameof(participant));
+            throw new ArgumentNullException($"Could not find a participant with Email adress: {email}");
 
         return ParticipantMapper.ToDTO(participant);
     }
 
     public async Task<IReadOnlyList<AllParticipantsResponseDTO>> GetAllParticipantsAsync(CancellationToken cancellationToken)
-    {   
+    {  
         var participants = await _participantRepository.GetAllAsync(cancellationToken);
-  
+        if (!participants.Any())
+            return new List<AllParticipantsResponseDTO>();
+
+
         return participants.Select(ParticipantMapper.AllToDTO).ToList();
     }
 
     public async Task<ParticipantResponseDTO> UpdateParticipantAsync(string email, UpdateParticipantDTO participantDTO, CancellationToken cancellationToken)
     {
         if(participantDTO == null)  
-            throw new ArgumentNullException(nameof(participantDTO));
+            throw new ArgumentNullException($"Could not find a participant with Email address: {email}");
 
         var checkParticipant = await _participantRepository.ExistsAsync(p => p.Email == email, cancellationToken);
         if(!checkParticipant)
-            throw new ArgumentException("Cannot find a Participant with that name.");
+            throw new ArgumentException($"Cannot find a Participant with Email address {email}.");
 
         var participantToUpdate = await _participantRepository.GetByEmailAsync(email, cancellationToken);
         if(participantToUpdate == null)

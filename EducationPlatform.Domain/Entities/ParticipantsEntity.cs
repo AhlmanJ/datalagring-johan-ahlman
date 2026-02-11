@@ -11,6 +11,7 @@ public class ParticipantsEntity
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
     public string Email { get; set; } = null!;
+    public bool IsEnrolled { get; set; } = false;
     public byte[] Concurrency { get; set; } = null!;
 
     // Specifies a relationship to the other entity to be able to use something called lazy loading at a later time.

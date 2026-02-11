@@ -29,12 +29,12 @@ public class CourseService : ICourseService
        _unitOfWork = unitOfWork;
     }
 
-    public async Task<CourseResponseDTO> CreateCourseAsync(CreateCourseDTO courseDTO, string Name, CancellationToken cancellationToken)
+    public async Task<CourseResponseDTO> CreateCourseAsync(CreateCourseDTO courseDTO, string name, CancellationToken cancellationToken)
     {
-        if(string.IsNullOrWhiteSpace(Name))
-            throw new ArgumentNullException($"{Name} cannot be empty.");
+        if(string.IsNullOrWhiteSpace(name))
+            throw new ArgumentNullException($"{name} cannot be empty.");
 
-        var checkCourse = await _courseRepository.ExistsAsync(c => c.Name == Name, cancellationToken);
+        var checkCourse = await _courseRepository.ExistsAsync(c => c.Name == name, cancellationToken);
         if(checkCourse)
             throw new ArgumentException($"A course with the name {checkCourse} already exists!");
 
@@ -56,7 +56,6 @@ public class CourseService : ICourseService
     }
 
     // -----------------  Help by ChatGPT -------------------
-
     public async Task<CourseResponseDTO> UpdateCourseAsync(string Name, UpdateCourseDTO courseDTO, CancellationToken cancellationToken)
     {
         if (courseDTO.Name == null)
@@ -77,7 +76,6 @@ public class CourseService : ICourseService
         return CourseMapper.ToDTO(courseToUpdate!);
     }
     // --------------------------------------------------------
-
     public async Task<bool> DeleteCourseAsync(Guid id, CancellationToken cancellationToken)
     {
         var courseToDelete = await _courseRepository.GetByIdAsync(id, cancellationToken);
@@ -93,15 +91,43 @@ public class CourseService : ICourseService
 
 
 
+
     public async Task<LessonResponseDTO> CreateLessonToCourseAsync(Guid courseId, CreateLessonDTO lessonDTO, CancellationToken cancellationToken)
     {
- 
+        
         var savedLesson = LessonMapper.ToEntity(lessonDTO);
         savedLesson.CourseId = courseId;
         await _lessonRepository.CreateAsync(savedLesson, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return LessonMapper.ToDTO(savedLesson);
+    }
+
+    public async Task<IReadOnlyList<LessonResponseDTO>> GetAllLessonByCourseIdAsync(Guid courseId, CancellationToken cancellationToken)
+    {
+        var lessons = await _lessonRepository.GetAllByCourseIdAsync(courseId, cancellationToken);
+        if (lessons.Count == 0)
+            throw new DomainException("No Lessons available");
+
+        return lessons.Select(LessonMapper.ToDTO).ToList();
+    }
+
+    public async Task<LessonResponseDTO> UpdateLessonAsync(string name, UpdateLessonDTO updateLessonDTO, CancellationToken cancellationToken) 
+    { 
+        if(updateLessonDTO == null )
+            throw new ArgumentNullException(nameof(updateLessonDTO));
+
+        if (name == null)
+            throw new ArgumentException("Name cannot be empty");
+
+        var lessonToUpdate = await _lessonRepository.GetByNameAsync(name, cancellationToken);
+        if (lessonToUpdate == null)
+            throw new ArgumentNullException(nameof(lessonToUpdate));
+
+        LessonMapper.UpdateLesson(lessonToUpdate, updateLessonDTO);
+        
+        await _unitOfWork.CommitAsync(cancellationToken);
+        return LessonMapper.ToDTO(lessonToUpdate);
     }
 
     public async Task<bool> DeleteLessonFromCourseAsync(Guid courseId, Guid lessonId, CancellationToken cancellationToken)
@@ -117,26 +143,19 @@ public class CourseService : ICourseService
     }
 
 
-    // -----------------  Help by ChatGPT -------------------
 
-    public async Task<LocationResponseDTO> CreateLocationToCourseAsync(Guid lessonId, string lessonName, CreateLocationDTO locationDTO, CancellationToken cancellationToken)
+
+
+    public async Task<IReadOnlyList<LocationResponseDTO>> GetAllLocationsAsync(CancellationToken cancellationToken)
     {
-        var lesson = await _lessonRepository.GetByNameAsync(lessonName, cancellationToken);
-        if (lesson == null)
-            throw new ArgumentNullException($"Could not find a lesson with the name {lesson}");
-       
-        var savedLocation = LocationMapper.ToEntity(locationDTO);
-        await _locationRepository.CreateAsync(savedLocation, cancellationToken);
+        var locations = await _locationRepository.GetAllAsync(cancellationToken);
+        if (locations.Count == 0)
+            return new List<LocationResponseDTO>();
 
-        lesson.LocationId = savedLocation.Id;
-        
-        await _unitOfWork.CommitAsync(cancellationToken);
-
-        return LocationMapper.ToDTO(savedLocation);
+        return locations.Select(LocationMapper.ToDTO).ToList();
     }
-    // --------------------------------------------------------
 
-    public async Task<bool> DeleteLocationFromCourseAsync(Guid courseId, string locationName, CancellationToken cancellationToken)
+    public async Task<bool> DeleteLocationFromCourseAsync(string locationName, CancellationToken cancellationToken)
     {
         var locationToDelete = await _locationRepository.GetByNameAsync(locationName, cancellationToken);
         if (locationToDelete == null)

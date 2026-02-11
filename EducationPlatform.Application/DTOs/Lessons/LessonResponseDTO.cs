@@ -6,6 +6,7 @@ public sealed record LessonResponseDTO
         DateTime StartDate, 
         DateTime EndDate, 
         int MaxCapacity,
+        int Enrolled,
         string CourseName,
         string Location
     );

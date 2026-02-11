@@ -18,11 +18,6 @@ public static class ParticipantMapper
             ? entity.Phonenumbers
             .Where(e => !string.IsNullOrEmpty(e.Phonenumber))
             .Select(e => e.Phonenumber!)
-            .ToList() : null,
-
-            EnrollmentStatus: entity.Enrollments != null
-            ? entity.Enrollments
-            .Select(e => e.Status.Status!)
             .ToList() : null
         );
 
@@ -55,8 +50,6 @@ public static class ParticipantMapper
 
     public static void UpdateEntity(ParticipantsEntity entity, UpdateParticipantDTO dto)
     {
-        entity.Id = dto.Id;
-
         if (dto.FirstName is not null)
         {
             entity.FirstName = dto.FirstName;
@@ -66,12 +59,5 @@ public static class ParticipantMapper
         {
             entity.LastName = dto.LastName;
         }
-
-        if (dto.Email is not null)
-        {
-            entity.Email = dto.Email;
-        }
-
-        entity.Concurrency = dto.Concurrency;
     }
 }

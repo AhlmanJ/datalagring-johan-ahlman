@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationPlatform.Infrastructure.Migrations
 {
     [DbContext(typeof(EducationPlatformDbContext))]
-    [Migration("20260210125134_ChangedDeleteBehavior2")]
-    partial class ChangedDeleteBehavior2
+    [Migration("20260211004508_NewParameter")]
+    partial class NewParameter
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -188,6 +188,9 @@ namespace EducationPlatform.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("NumberEnrolled")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .ValueGeneratedOnAdd()

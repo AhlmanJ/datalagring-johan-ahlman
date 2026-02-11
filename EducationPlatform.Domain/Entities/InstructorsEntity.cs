@@ -36,7 +36,7 @@ public class InstructorsEntity
 
         var EmailRegEx = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
 
-        if (Regex.IsMatch(email, EmailRegEx))
+        if (!Regex.IsMatch(email, EmailRegEx))
             throw new DomainException("Invalid Email, use name@example.com");
     }
 
