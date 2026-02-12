@@ -1,5 +1,4 @@
-﻿using EducationPlatform.Domain.Middlewares;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace EducationPlatform.Domain.Entities;
@@ -32,23 +31,23 @@ public class InstructorsEntity
     public void ValidateEmail(string email) 
     { 
         if (string.IsNullOrWhiteSpace(email))
-            throw new DomainException("Email is required, please try again..");
+            throw new ArgumentException("Email is required, please try again..");
 
         var EmailRegEx = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
 
         if (!Regex.IsMatch(email, EmailRegEx))
-            throw new DomainException("Invalid Email, use name@example.com");
+            throw new ArgumentException("Invalid Email, use name@example.com");
     }
 
     public void ValidateFirstName(string firstname) 
     {
         if (string.IsNullOrWhiteSpace(firstname))
-            throw new DomainException("First name is required");
+            throw new ArgumentException("First name is required");
     }
 
     public void ValidateLastName(string lastname)
     {
         if (string.IsNullOrWhiteSpace(lastname))
-            throw new DomainException("Last name is required");
+            throw new ArgumentException("Last name is required");
     }
 }

@@ -1,5 +1,4 @@
-﻿using EducationPlatform.Domain.Middlewares;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EducationPlatform.Domain.Entities;
 
@@ -25,6 +24,6 @@ public class LocationsEntity
     public void ValidateName(string name) 
     { 
         if (string.IsNullOrEmpty(name)) 
-            throw new DomainException("Name cannot be empty");
+            throw new ArgumentException("Name cannot be empty");
     }
 }

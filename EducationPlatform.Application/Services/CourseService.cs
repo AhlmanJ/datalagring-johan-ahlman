@@ -10,7 +10,6 @@ using EducationPlatform.Application.Mappers.Lessons;
 using EducationPlatform.Application.Mappers.Locations;
 using EducationPlatform.Application.ServiceInterfaces;
 using EducationPlatform.Domain.Interfaces;
-using EducationPlatform.Domain.Middlewares;
 using EducationPlatform.Domain.Repositories;
 
 namespace EducationPlatform.Application.Services;
@@ -48,9 +47,8 @@ public class CourseService : ICourseService
     public async Task<IReadOnlyList<CourseResponseDTO>> GetAllCoursesAsync(CancellationToken cancellationToken)
     {
         var courses = await _courseRepository.GetAllAsync(cancellationToken);
-
         if (courses.Count == 0)
-            throw new DomainException("No Courses available");
+            throw new KeyNotFoundException("No Courses available");
 
         return courses.Select(CourseMapper.ToDTO).ToList();
     }
@@ -63,11 +61,11 @@ public class CourseService : ICourseService
 
         var checkName = await _courseRepository.ExistsAsync(c => c.Name == Name, cancellationToken);
         if (!checkName)
-            throw new ArgumentException("Cannot find a Course with that name.");
+            throw new KeyNotFoundException("Cannot find a Course with that name.");
 
         var courseToUpdate = await _courseRepository.GetByNameAsync(Name, cancellationToken);
         if (courseToUpdate == null)
-            throw new ArgumentNullException(nameof(courseToUpdate));
+            throw new KeyNotFoundException(nameof(courseToUpdate));
 
         CourseMapper.UpdateEntity(courseToUpdate!, courseDTO);
 
@@ -94,7 +92,6 @@ public class CourseService : ICourseService
 
     public async Task<LessonResponseDTO> CreateLessonToCourseAsync(Guid courseId, CreateLessonDTO lessonDTO, CancellationToken cancellationToken)
     {
-        
         var savedLesson = LessonMapper.ToEntity(lessonDTO);
         savedLesson.CourseId = courseId;
         await _lessonRepository.CreateAsync(savedLesson, cancellationToken);
@@ -107,7 +104,7 @@ public class CourseService : ICourseService
     {
         var lessons = await _lessonRepository.GetAllByCourseIdAsync(courseId, cancellationToken);
         if (lessons.Count == 0)
-            throw new DomainException("No Lessons available");
+            throw new KeyNotFoundException("No Lessons available");
 
         return lessons.Select(LessonMapper.ToDTO).ToList();
     }
@@ -122,7 +119,7 @@ public class CourseService : ICourseService
 
         var lessonToUpdate = await _lessonRepository.GetByNameAsync(name, cancellationToken);
         if (lessonToUpdate == null)
-            throw new ArgumentNullException(nameof(lessonToUpdate));
+            throw new KeyNotFoundException(nameof(lessonToUpdate));
 
         LessonMapper.UpdateLesson(lessonToUpdate, updateLessonDTO);
         

@@ -34,11 +34,11 @@ public class EnrollmentService : IEnrollmentService
     {
         var participant = await _participantRepository.GetByIdAsync(participantId, cancellationToken);
         if(participant == null) 
-            throw new ArgumentNullException(nameof(participant), "No participant found");
+            throw new KeyNotFoundException("No participant found");
         
         var lesson = await _lessonRepository.GetByIdAsync(lessonsId, cancellationToken);
         if(lesson == null)
-            throw new ArgumentNullException($"{lessonsId} does not exists.");
+            throw new KeyNotFoundException($"{lessonsId} does not exists.");
 
         var savedEnrollment = EnrollmentMapper.ToEntity(enrollmentDTO);
 
@@ -79,7 +79,7 @@ public class EnrollmentService : IEnrollmentService
 
         var participant = await _participantRepository.GetByIdAsync(participantId, cancellationToken);
         if (participant == null)
-            throw new ArgumentNullException(nameof(participant), "No participant found");
+            throw new KeyNotFoundException("No participant found");
 
         var lesson = await _lessonRepository.GetByNameAsync(lessonName, cancellationToken);
         if (lesson == null)
