@@ -40,7 +40,7 @@ public class ParticipantService : IParticipantService
 
         var participant = await _participantRepository.GetByEmailAsync(email, cancellationToken);
         if (participant == null)
-            throw new ArgumentNullException($"Could not find a participant with Email adress: {email}");
+            throw new KeyNotFoundException($"Could not find a participant with Email adress: {email}");
 
         return ParticipantMapper.ToDTO(participant);
     }
@@ -60,13 +60,9 @@ public class ParticipantService : IParticipantService
         if(participantDTO == null)  
             throw new ArgumentNullException($"Could not find a participant with Email address: {email}");
 
-        var checkParticipant = await _participantRepository.ExistsAsync(p => p.Email == email, cancellationToken);
-        if(!checkParticipant)
-            throw new ArgumentException($"Cannot find a Participant with Email address {email}.");
-
         var participantToUpdate = await _participantRepository.GetByEmailAsync(email, cancellationToken);
         if(participantToUpdate == null)
-            throw new ArgumentNullException(nameof(participantToUpdate));
+            throw new KeyNotFoundException($"Cannot find a Participant with Email address {email}.");
 
         ParticipantMapper.UpdateEntity(participantToUpdate, participantDTO);
         await _unitOfWork.CommitAsync(cancellationToken);
@@ -93,7 +89,7 @@ public class ParticipantService : IParticipantService
     {
         var participant = await _participantRepository.GetByIdAsync(participantId, cancellationToken);
         if (participant == null)
-            throw new ArgumentNullException("Could not find participant!");
+            throw new KeyNotFoundException("Could not find participant!");
 
         var savedPhonenumber = PhonenumberMapper.ToEntity(phonenumberDTO);
         savedPhonenumber.Participant = participant; // Explained to me by chatGPT in "InstructorService". (Sets the relation to a specific participant.)

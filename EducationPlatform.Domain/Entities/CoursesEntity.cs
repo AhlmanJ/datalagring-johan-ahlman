@@ -4,7 +4,6 @@
  * I also got help from ChatGPT on how to create "Description" as an optional parameter.
 */
 
-using EducationPlatform.Domain.Middlewares;
 using System.ComponentModel.DataAnnotations;
 
 namespace EducationPlatform.Domain.Entities;
@@ -32,7 +31,7 @@ public class CoursesEntity
     public void ValidateName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new DomainException("Name cannot be empty");
+            throw new ArgumentException("Name cannot be empty");
 
         Name = name.Trim();
     }

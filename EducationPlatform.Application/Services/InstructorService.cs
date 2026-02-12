@@ -37,7 +37,7 @@ public class InstructorService : IInstructorService
     {
         var instructor = await _instructorRepository.GetByEmailAsync(email, cancellationToken);
         if (instructor == null) 
-            throw new ArgumentNullException("Could not find a Instructor with that Email address");
+            throw new KeyNotFoundException("Could not find a Instructor with that Email address");
 
         return InstructorMapper.ToDTO(instructor);
     }
@@ -58,7 +58,7 @@ public class InstructorService : IInstructorService
 
         var instructorToUpdate = await _instructorRepository.GetByIdAsync(id, cancellationToken);
         if (instructorToUpdate == null)
-            throw new ArgumentNullException(nameof(instructorToUpdate));
+            throw new KeyNotFoundException($"Could not find a instructor with Id: {id}");
 
         InstructorMapper.UpdateEntity(instructorToUpdate, instructorDTO);
         await _unitOfWork.CommitAsync(cancellationToken);
@@ -85,7 +85,7 @@ public class InstructorService : IInstructorService
     {
         var instructor = await _instructorRepository.GetByIdAsync(instructorId, cancellationToken);
         if (instructor == null)
-            throw new ArgumentNullException("The instructor does not exist.");
+            throw new KeyNotFoundException($"Could not find a instructor with Id: {instructorId}");
 
         var savedExpertise = ExpertiseMapper.ToEntity(expertiseDTO);
         // Explained to me by chatGPT that EF Core needs to know the many-to-many relation. Otherwise the expertise will be created but not related to the instructor.

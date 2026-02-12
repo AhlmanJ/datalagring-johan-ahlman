@@ -16,6 +16,7 @@ using EducationPlatform.Domain.Interfaces;
 using EducationPlatform.Domain.Repositories;
 using EducationPlatform.Infrastructure.Data;
 using EducationPlatform.Infrastructure.Repositories;
+using EducationPlatform.Presentation.Api.Middleware;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,6 +57,19 @@ builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
 builder.Services.AddScoped<IPhonenumberRepository, PhonenumberRepository>();
 
+// From the in school lesson. (Example-code.) 
+// For GlobalExceptionHandler:
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        // Adding a unique Id for the specific HTTP-Request that could be usefull while debugging.
+        context.ProblemDetails.Extensions["requestId"] = context.HttpContext.TraceIdentifier;
+    };
+});
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 var app = builder.Build();
 
 // For Swagger:
@@ -69,6 +83,8 @@ if (app.Environment.IsDevelopment())
 app.MapOpenApi();
 app.UseHttpsRedirection();
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); // To be able to use for example a REACT frontend.
+
+app.UseExceptionHandler();
 
 // EndPoints:
 
