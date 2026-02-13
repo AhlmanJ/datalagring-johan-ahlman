@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EducationPlatform.Presentation.Api.Middleware;
 
+// IExceptionHandler = A built-in interface in ASP.NET Core (.NET 7 and later versions).
+// To see the interface: Select "IExceptionHandler" and press "F12". The interface uses ValueTask and not Task. 
+// ValueTask is different from a Task. For example: a ValueTask is of the data type Struct and Task is a Class.
 public class GlobalExceptionHandler : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)

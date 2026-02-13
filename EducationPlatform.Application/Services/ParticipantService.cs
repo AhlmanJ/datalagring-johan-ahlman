@@ -28,6 +28,9 @@ public class ParticipantService : IParticipantService
 
     public async Task<ParticipantResponseDTO> CreateParticipantAsync(CreateParticipantDTO participantDTO, CancellationToken cancellationToken)
     {
+        if(participantDTO == null)
+            throw new ArgumentNullException(nameof(participantDTO));
+
         var savedParticipant = ParticipantMapper.ToEntity(participantDTO);
         await _participantRepository.CreateAsync(savedParticipant, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
@@ -37,6 +40,8 @@ public class ParticipantService : IParticipantService
 
     public async Task<ParticipantResponseDTO> GetParticipantByEmailAsync(string email, CancellationToken cancellationToken)
     {
+        if(email == null)
+            throw new ArgumentNullException("Email cannot be empty");
 
         var participant = await _participantRepository.GetByEmailAsync(email, cancellationToken);
         if (participant == null)
@@ -48,7 +53,7 @@ public class ParticipantService : IParticipantService
     public async Task<IReadOnlyList<AllParticipantsResponseDTO>> GetAllParticipantsAsync(CancellationToken cancellationToken)
     {  
         var participants = await _participantRepository.GetAllAsync(cancellationToken);
-        if (!participants.Any())
+        if (participants.Count == 0)
             return new List<AllParticipantsResponseDTO>();
 
 
@@ -57,6 +62,9 @@ public class ParticipantService : IParticipantService
 
     public async Task<ParticipantResponseDTO> UpdateParticipantAsync(string email, UpdateParticipantDTO participantDTO, CancellationToken cancellationToken)
     {
+        if (email == null)
+            throw new ArgumentNullException("Email cannot be empty. Please try again.");
+
         if(participantDTO == null)  
             throw new ArgumentNullException($"Could not find a participant with Email address: {email}");
 
@@ -72,6 +80,9 @@ public class ParticipantService : IParticipantService
 
     public async Task<bool> DeleteParticipantAsync(string email, CancellationToken cancellationToken)
     {
+        if(email == null)
+            throw new ArgumentNullException("Email cannot be empty. Please try again.");
+
         var participantToDelte = await _participantRepository.GetByEmailAsync(email, cancellationToken);
         if(participantToDelte == null)
             return false;
@@ -87,6 +98,9 @@ public class ParticipantService : IParticipantService
     // -------------------------- See notes! -----------------------------
     public async Task<PhonenumberResponseDTO> CreatePhonenumberToParticipantAsync(Guid participantId, CreatePhonenumberDTO phonenumberDTO, CancellationToken cancellationToken)
     {
+        if (participantId == Guid.Empty)
+            throw new ArgumentNullException(nameof(participantId));
+
         var participant = await _participantRepository.GetByIdAsync(participantId, cancellationToken);
         if (participant == null)
             throw new KeyNotFoundException("Could not find participant!");
@@ -103,6 +117,12 @@ public class ParticipantService : IParticipantService
 
     public async Task<bool> DeletePhonenumberFromParticipantAsync(Guid participantId, Guid phonenumberId, CancellationToken cancellationToken)
     {
+        if (participantId == Guid.Empty)
+            throw new ArgumentNullException(nameof(participantId));
+
+        if(phonenumberId == Guid.Empty)
+            throw new ArgumentNullException(nameof(phonenumberId));
+
         var phonenumbers = await _phonenumberRepository.GetByParticipantAsync(participantId, cancellationToken); // Get all phonenumber for a participant.
         var phonenumberToDelete = phonenumbers.FirstOrDefault(p => p.Id == phonenumberId); // Find phonenumber to delete.
         if (phonenumberToDelete == null)

@@ -28,13 +28,13 @@ public class CourseService : ICourseService
        _unitOfWork = unitOfWork;
     }
 
-    public async Task<CourseResponseDTO> CreateCourseAsync(CreateCourseDTO courseDTO, string name, CancellationToken cancellationToken)
+    public async Task<CourseResponseDTO> CreateCourseAsync(CreateCourseDTO courseDTO, CancellationToken cancellationToken)
     {
-        if(string.IsNullOrWhiteSpace(name))
-            throw new ArgumentNullException($"{name} cannot be empty.");
+        if (string.IsNullOrWhiteSpace(courseDTO.Name))
+            throw new ArgumentNullException($"{courseDTO.Name} cannot be empty.");
 
-        var checkCourse = await _courseRepository.ExistsAsync(c => c.Name == name, cancellationToken);
-        if(checkCourse)
+        var checkCourse = await _courseRepository.ExistsAsync(c => c.Name == courseDTO.Name, cancellationToken);
+        if (checkCourse)
             throw new ArgumentException($"A course with the name {checkCourse} already exists!");
 
         var savedCourse = CourseMapper.ToEntity(courseDTO);
@@ -47,8 +47,8 @@ public class CourseService : ICourseService
     public async Task<IReadOnlyList<CourseResponseDTO>> GetAllCoursesAsync(CancellationToken cancellationToken)
     {
         var courses = await _courseRepository.GetAllAsync(cancellationToken);
-        if (courses.Count == 0)
-            throw new KeyNotFoundException("No Courses available");
+        if (courses == null)
+            return new List<CourseResponseDTO>();
 
         return courses.Select(CourseMapper.ToDTO).ToList();
     }
@@ -76,6 +76,9 @@ public class CourseService : ICourseService
     // --------------------------------------------------------
     public async Task<bool> DeleteCourseAsync(Guid id, CancellationToken cancellationToken)
     {
+        if (id == Guid.Empty)
+            throw new ArgumentNullException(nameof(id));
+
         var courseToDelete = await _courseRepository.GetByIdAsync(id, cancellationToken);
         if (courseToDelete == null)
             return false;
@@ -92,9 +95,17 @@ public class CourseService : ICourseService
 
     public async Task<LessonResponseDTO> CreateLessonToCourseAsync(Guid courseId, CreateLessonDTO lessonDTO, CancellationToken cancellationToken)
     {
+        if (courseId == Guid.Empty)
+            throw new ArgumentNullException(nameof(courseId));
+
+        if (lessonDTO == null)
+            throw new ArgumentNullException(nameof(lessonDTO));
+
         var savedLesson = LessonMapper.ToEntity(lessonDTO);
         savedLesson.CourseId = courseId;
+
         await _lessonRepository.CreateAsync(savedLesson, cancellationToken);
+
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return LessonMapper.ToDTO(savedLesson);
@@ -102,9 +113,12 @@ public class CourseService : ICourseService
 
     public async Task<IReadOnlyList<LessonResponseDTO>> GetAllLessonByCourseIdAsync(Guid courseId, CancellationToken cancellationToken)
     {
+        if (courseId == Guid.Empty)
+            throw new ArgumentNullException(nameof(courseId));
+
         var lessons = await _lessonRepository.GetAllByCourseIdAsync(courseId, cancellationToken);
         if (lessons.Count == 0)
-            throw new KeyNotFoundException("No Lessons available");
+            return new List<LessonResponseDTO>();
 
         return lessons.Select(LessonMapper.ToDTO).ToList();
     }
@@ -129,9 +143,17 @@ public class CourseService : ICourseService
 
     public async Task<bool> DeleteLessonFromCourseAsync(Guid courseId, Guid lessonId, CancellationToken cancellationToken)
     {
+        if (courseId == Guid.Empty)
+            throw new ArgumentNullException(nameof(courseId));
+
+        if (lessonId == Guid.Empty)
+            throw new ArgumentNullException(nameof(lessonId));
+
         var lessonToDelete = await _lessonRepository.GetByIdAsync(lessonId,  cancellationToken);
         if (lessonToDelete == null)
             return false;
+        
+        
 
         await _lessonRepository.DeleteAsync(lessonToDelete, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
@@ -154,6 +176,9 @@ public class CourseService : ICourseService
 
     public async Task<bool> DeleteLocationFromCourseAsync(string locationName, CancellationToken cancellationToken)
     {
+        if(locationName == null)
+            throw new ArgumentNullException("Location name cannot be empty. Please try again.");
+
         var locationToDelete = await _locationRepository.GetByNameAsync(locationName, cancellationToken);
         if (locationToDelete == null)
             return false;
