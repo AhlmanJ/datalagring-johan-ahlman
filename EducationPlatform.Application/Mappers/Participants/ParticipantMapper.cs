@@ -11,6 +11,7 @@ public static class ParticipantMapper
     public static ParticipantResponseDTO ToDTO(ParticipantsEntity entity)
         => new ParticipantResponseDTO
         (
+            ParticipantId: entity.Id, 
             FirstName: entity.FirstName,
             LastName: entity.LastName,
             Email: entity.Email,
@@ -24,6 +25,7 @@ public static class ParticipantMapper
     public static AllParticipantsResponseDTO AllToDTO(ParticipantsEntity entity) 
         => new AllParticipantsResponseDTO
         (
+            ParticipantId: entity.Id,
             FirstName: entity.FirstName,
             LastName: entity.LastName,
             Email: entity.Email

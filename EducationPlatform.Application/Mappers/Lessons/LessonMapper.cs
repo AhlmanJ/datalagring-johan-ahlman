@@ -16,7 +16,8 @@ public static class LessonMapper
 
     public static LessonResponseDTO ToDTO(LessonsEntity entity)
         => new LessonResponseDTO
-        (
+        (   
+            entity.Id,
             Name: entity.Name,
             StartDate: entity.StartDate,
             EndDate: entity.EndDate,

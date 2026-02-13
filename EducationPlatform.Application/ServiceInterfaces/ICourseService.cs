@@ -6,7 +6,7 @@ namespace EducationPlatform.Application.ServiceInterfaces;
 
 public interface ICourseService
 {
-    Task<CourseResponseDTO> CreateCourseAsync(CreateCourseDTO courseDTO, string name, CancellationToken cancellationToken);
+    Task<CourseResponseDTO> CreateCourseAsync(CreateCourseDTO courseDTO, CancellationToken cancellationToken);
     Task<CourseResponseDTO> UpdateCourseAsync(string name, UpdateCourseDTO courseDTO, CancellationToken cancellationToken);
     Task<IReadOnlyList<CourseResponseDTO>> GetAllCoursesAsync(CancellationToken cancellationToken);
     Task<bool> DeleteCourseAsync(Guid id, CancellationToken cancellationToken);

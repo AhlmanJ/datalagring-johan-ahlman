@@ -11,7 +11,8 @@ public static class CourseMapper
     // Converts a Entity to a DTO. ( By chatGPT )
     public static CourseResponseDTO ToDTO(CoursesEntity entity) 
         => new CourseResponseDTO // Creates a new DTO with the properties declared in the method. (Only the properties needed for the response).
-        (
+        (   
+           Id: entity.Id,
            Name: entity.Name,
            Description: entity.Description
         );

@@ -8,6 +8,7 @@ public static class EnrollmentMapper
     public static EnrollmentResponseDTO ToDTO(EnrollmentsEntity entity)
         => new EnrollmentResponseDTO
          (
+            EnrollmentId: entity.Id,
             FirstName: entity.Participant.FirstName,
             LastName: entity.Participant.LastName,
             Email: entity.Participant.Email,

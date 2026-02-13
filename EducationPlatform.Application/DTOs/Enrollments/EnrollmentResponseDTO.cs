@@ -1,7 +1,8 @@
 ﻿namespace EducationPlatform.Application.DTOs.Enrollments;
 
 public sealed record EnrollmentResponseDTO
-    (
+    (   
+        Guid EnrollmentId,
         string FirstName,
         string LastName,
         string Email,

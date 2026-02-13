@@ -26,6 +26,14 @@ public class InstructorService : IInstructorService
 
     public async Task<InstructorResponseDTO> CreateInstructorAsync(CreateInstructorDTO instructorDTO, CancellationToken cancellationToken)
     {
+        if (instructorDTO == null)
+            throw new ArgumentNullException("Instructor cannot be empty. Please try again.");
+
+        var allreadyExists = await _instructorRepository.GetByEmailAsync(instructorDTO.Email, cancellationToken);
+        if (instructorDTO.Email.Any())
+            throw new ArgumentException("Instructor allready exist. Please try again.");
+
+
         var savedInstructor = InstructorMapper.ToEntity(instructorDTO);
         await _instructorRepository.CreateAsync(savedInstructor, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
@@ -35,6 +43,9 @@ public class InstructorService : IInstructorService
 
     public async Task<InstructorResponseDTO> GetInstructorByEmailAsync(string email, CancellationToken cancellationToken)
     {
+        if(email == null)
+            throw new ArgumentNullException("Email cannot be empty. Please try again.");
+
         var instructor = await _instructorRepository.GetByEmailAsync(email, cancellationToken);
         if (instructor == null) 
             throw new KeyNotFoundException("Could not find a Instructor with that Email address");
@@ -45,6 +56,10 @@ public class InstructorService : IInstructorService
     public async Task<IReadOnlyList<AllInstructorsResponseDTO>> GetAllInstructorsAsync(CancellationToken cancellationToken)
     {
         var instructors = await _instructorRepository.GetAllAsync(cancellationToken);
+
+        if(instructors.Count == 0)
+            return new List<AllInstructorsResponseDTO>();
+
         return instructors.Select(InstructorMapper.AllToDTO).ToList();
     }
 
@@ -68,6 +83,9 @@ public class InstructorService : IInstructorService
 
     public async Task<bool> DeleteInstructorAsync(Guid id, CancellationToken cancellationToken)
     {
+        if (id == Guid.Empty)
+            throw new ArgumentNullException(nameof(id));
+
         var instructorToDelete = await _instructorRepository.GetByIdAsync(id, cancellationToken);
         if (instructorToDelete == null)
             return false;

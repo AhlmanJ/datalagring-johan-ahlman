@@ -12,6 +12,7 @@ using EducationPlatform.Application.ServiceInterfaces;
 using EducationPlatform.Domain.Entities;
 using EducationPlatform.Domain.Interfaces;
 using EducationPlatform.Domain.Repositories;
+using System.Data;
 
 namespace EducationPlatform.Application.Services;
 
@@ -32,6 +33,9 @@ public class EnrollmentService : IEnrollmentService
 
     public async Task<EnrollmentResponseDTO> CreateEnrollmentAsync(CreateEnrollmentDTO enrollmentDTO, Guid participantId, Guid lessonsId, CancellationToken cancellationToken)
     {
+        if(enrollmentDTO == null)
+            throw new ArgumentNullException(nameof(enrollmentDTO));
+
         var participant = await _participantRepository.GetByIdAsync(participantId, cancellationToken);
         if(participant == null) 
             throw new KeyNotFoundException("No participant found");
@@ -68,27 +72,38 @@ public class EnrollmentService : IEnrollmentService
     public async Task<IReadOnlyList<EnrollmentResponseDTO>> GetAllEnrollmentsAsync(CancellationToken cancellationToken)
     {
         var enrollments = await _enrollmentRepository.GetAllEnrollmentsAsync(cancellationToken);
+        if (enrollments.Count == 0)
+            return new List<EnrollmentResponseDTO>();
+
         return enrollments.Select(EnrollmentMapper.ToDTO).ToList();
     }
 
     public async Task<bool> DeleteEnrollmentAsync(Guid enrollmentId, string lessonName, Guid participantId, CancellationToken cancellationToken)
     {
+        if (enrollmentId == Guid.Empty)
+            throw new ArgumentNullException(nameof(enrollmentId));
+
+        if (participantId == Guid.Empty)
+            throw new ArgumentNullException(nameof(participantId));
+
+        if (lessonName == null)
+            throw new ArgumentNullException("Lesson name cannot be empty.");
+
         var enrollmentToDelete = await _enrollmentRepository.GetByIdAsync(enrollmentId, cancellationToken);
         if (enrollmentToDelete == null)
-            return false;
+            throw new KeyNotFoundException("Could not find the requested enrollment. Please try again.");
 
         var participant = await _participantRepository.GetByIdAsync(participantId, cancellationToken);
         if (participant == null)
-            throw new KeyNotFoundException("No participant found");
+            throw new KeyNotFoundException("Could not find the requested participant. Please try again.");
 
         var lesson = await _lessonRepository.GetByNameAsync(lessonName, cancellationToken);
         if (lesson == null)
-            return false;
+            throw new KeyNotFoundException("Could not find the requested lesson. Please try again.");
 
         lesson.NumberEnrolled--;
         participant.IsEnrolled = false;
         
-
         await _enrollmentRepository.DeleteAsync(enrollmentToDelete, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 

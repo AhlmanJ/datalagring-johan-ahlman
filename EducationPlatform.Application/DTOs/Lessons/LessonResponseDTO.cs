@@ -2,6 +2,7 @@
 
 public sealed record LessonResponseDTO
     (
+        Guid id,
         string Name,
         DateTime StartDate, 
         DateTime EndDate, 

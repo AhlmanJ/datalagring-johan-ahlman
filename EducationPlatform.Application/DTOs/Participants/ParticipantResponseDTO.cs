@@ -2,6 +2,7 @@
 
 public sealed record ParticipantResponseDTO
     (
+        Guid ParticipantId,
         string FirstName,
         string LastName,
         string Email,

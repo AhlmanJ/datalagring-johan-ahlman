@@ -6,6 +6,7 @@ namespace EducationPlatform.Application.DTOs.Courses;
 
 public sealed record CourseResponseDTO
     (
+        Guid Id,
         string Name,
         String Description
     );
