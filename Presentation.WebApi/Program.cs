@@ -1,9 +1,10 @@
-// Here chatGPT has helped me implement Unit Of Work. See note in the code.
+
+
+// Here chatGPT has helped me implement Unit Of Work. See notes in the code + DbContext.
 
 using EducationPlatform.Application.Abstractions.Persistence;
 using EducationPlatform.Application.DTOs.Courses;
 using EducationPlatform.Application.DTOs.Enrollments;
-using EducationPlatform.Application.DTOs.Expertises;
 using EducationPlatform.Application.DTOs.Instructors;
 using EducationPlatform.Application.DTOs.Lessons;
 using EducationPlatform.Application.DTOs.Participants;
@@ -53,7 +54,6 @@ builder.Services.AddScoped<IParticipantService, ParticipantService>();
 // Repositories:
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
-builder.Services.AddScoped<IExpertiseRepository, ExpertiseRepository>();
 builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
@@ -129,7 +129,7 @@ courses.MapGet("/{courseId:guid}/lessons", async (Guid courseId, ICourseService 
 
     return Results.Ok(result);
 });
-
+        
 courses.MapGet("/locations", async (ICourseService courseService, CancellationToken ct) =>
 { 
     var result = await courseService.GetAllLocationsAsync(ct);
@@ -137,17 +137,16 @@ courses.MapGet("/locations", async (ICourseService courseService, CancellationTo
     return Results.Ok(result);
 });
 
-
 // UPDATE
-courses.MapPut("/{Name}", async (string Name, UpdateCourseDTO dto, ICourseService courseService, CancellationToken ct) =>
+courses.MapPut("/{id:guid}", async (Guid id, UpdateCourseDTO dto, ICourseService courseService, CancellationToken ct) =>
 {
-    var result = await courseService.UpdateCourseAsync(Name, dto, ct);
+    var result = await courseService.UpdateCourseAsync(id, dto, ct);
     return Results.Ok(result);
 });
 
-courses.MapPut("/lessons/{Name}", async(string Name, UpdateLessonDTO updateLessonDTO, ICourseService courseService, CancellationToken ct) =>
+courses.MapPut("/lessons/{lessonId:guid}", async(Guid lessonId, UpdateLessonDTO updateLessonDTO, ICourseService courseService, CancellationToken ct) =>
 { 
-    var result = await courseService.UpdateLessonAsync(Name, updateLessonDTO, ct);
+    var result = await courseService.UpdateLessonAsync(lessonId, updateLessonDTO, ct);
 
     return Results.Ok(result);
 });
@@ -158,19 +157,22 @@ courses.MapDelete("/{id:guid}", async (Guid id, ICourseService courseService, Ca
     await courseService.DeleteCourseAsync(id, ct);
 });
 
-courses.MapDelete("/{courseId:guid}/lessons/{lessonId:guid}", async (Guid courseId, Guid lessonId, ICourseService courseService, CancellationToken ct) =>
+courses.MapDelete("/lessons/{lessonId:guid}", async (Guid lessonId, ICourseService courseService, CancellationToken ct) =>
 {
-    var result = await courseService.DeleteLessonFromCourseAsync(courseId, lessonId, ct);
+    var result = await courseService.DeleteLessonFromCourseAsync(lessonId, ct);
 
      return result ? Results.NoContent() : Results.BadRequest();
 });
 
+   
 courses.MapDelete("/locations/{locationName}", async (string locationName, ICourseService courseService, CancellationToken ct) =>
 {
     var result = await courseService.DeleteLocationFromCourseAsync(locationName, ct);
 
     return result ? Results.NoContent() : Results.BadRequest();
 });
+
+
 #endregion
 
 
@@ -217,24 +219,10 @@ instructors.MapPost("/", async (CreateInstructorDTO dto, IInstructorService inst
     return Results.Created("/", result);
 });
 
-instructors.MapPost("/CreateExpertise", async (Guid instructorId, CreateExpertiseDTO dto, IInstructorService instructorService, CancellationToken ct) =>
-{
-    var result = await instructorService.CreateExpertiseToInstructorAsync(instructorId, dto, ct);
-
-    return Results.Created("/", result);
-});
-
 // READ
 instructors.MapGet("/", async (IInstructorService instructorService, CancellationToken ct) =>
 {
     var result = await instructorService.GetAllInstructorsAsync(ct);
-
-    return Results.Ok(result);
-});
-
-instructors.MapGet("/{email}", async (string email, IInstructorService instructorService, CancellationToken ct) =>
-{ 
-    var result = await instructorService.GetInstructorByEmailAsync(email, ct);
 
     return Results.Ok(result);
 });
@@ -246,17 +234,17 @@ instructors.MapPut("/{Id:guid}", async (Guid id, UpdateInstructorDTO dto, IInstr
     return Results.Ok(result);
 });
 
+instructors.MapPut("/{instructorId:guid}/lesson/{lessonId}", async (Guid instructorId, Guid lessonId, IInstructorService instructorService, CancellationToken ct) =>
+{
+    var result = await instructorService.EnrollInstructorToLessonAsync(lessonId, instructorId, ct);
+
+    return Results.Ok(result);
+});
+
 // DELETE
 instructors.MapDelete("/{Id:guid}", async (Guid id, IInstructorService instructorService, CancellationToken ct) =>
 {
     var result = await instructorService.DeleteInstructorAsync(id, ct);
-
-    return result ? Results.NoContent() : Results.BadRequest();
-});
-
-instructors.MapDelete("/{instructorId:guid}/expertise/{Id:guid}", async (Guid instructorId, Guid id, IInstructorService instructorService, CancellationToken ct) =>
-{
-    var result = await instructorService.DeleteExpertiseFromInstructorAsync(instructorId, id, ct);
 
     return result ? Results.NoContent() : Results.BadRequest();
 });
@@ -311,13 +299,6 @@ participants.MapPut("/{email}", async (string email, UpdateParticipantDTO dto, I
 participants.MapDelete("/{email}", async (string email, IParticipantService participantService, CancellationToken ct) =>
 {
     var result = await participantService.DeleteParticipantAsync(email, ct);
-
-    return result ? Results.NoContent() : Results.BadRequest();
-});
-
-participants.MapDelete("/{participantId:guid}/deletePhonenumbers/{phonenumberId:guid}", async (Guid participantId, Guid phonenumberId, IParticipantService participantService, CancellationToken ct) =>
-{
-    var result = await participantService.DeletePhonenumberFromParticipantAsync(participantId, phonenumberId, ct);
 
     return result ? Results.NoContent() : Results.BadRequest();
 });

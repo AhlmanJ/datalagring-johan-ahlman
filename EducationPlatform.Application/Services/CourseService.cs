@@ -19,12 +19,14 @@ public class CourseService : ICourseService
     private readonly ICourseRepository _courseRepository;
     private readonly ILocationRepository _locationRepository;
     private readonly ILessonRepository _lessonRepository;
+    private readonly IInstructorRepository _instructorRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CourseService(ICourseRepository courseRepository,ILocationRepository locationRepository, ILessonRepository lessonRepository, IUnitOfWork unitOfWork)
+    public CourseService(ICourseRepository courseRepository,ILocationRepository locationRepository, ILessonRepository lessonRepository, IInstructorRepository instructorRepository, IUnitOfWork unitOfWork)
     {  _courseRepository = courseRepository;
        _locationRepository = locationRepository;
        _lessonRepository = lessonRepository;
+       _instructorRepository = instructorRepository;
        _unitOfWork = unitOfWork;
     }
 
@@ -54,16 +56,12 @@ public class CourseService : ICourseService
     }
 
     // -----------------  Help by ChatGPT -------------------
-    public async Task<CourseResponseDTO> UpdateCourseAsync(string Name, UpdateCourseDTO courseDTO, CancellationToken cancellationToken)
+    public async Task<CourseResponseDTO> UpdateCourseAsync(Guid Id, UpdateCourseDTO courseDTO, CancellationToken cancellationToken)
     {
         if (courseDTO.Name == null)
             throw new ArgumentNullException(nameof(courseDTO.Name));
 
-        var checkName = await _courseRepository.ExistsAsync(c => c.Name == Name, cancellationToken);
-        if (!checkName)
-            throw new KeyNotFoundException("Cannot find a Course with that name.");
-
-        var courseToUpdate = await _courseRepository.GetByNameAsync(Name, cancellationToken);
+        var courseToUpdate = await _courseRepository.GetByIdAsync(Id, cancellationToken);
         if (courseToUpdate == null)
             throw new KeyNotFoundException(nameof(courseToUpdate));
 
@@ -105,7 +103,6 @@ public class CourseService : ICourseService
         savedLesson.CourseId = courseId;
 
         await _lessonRepository.CreateAsync(savedLesson, cancellationToken);
-
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return LessonMapper.ToDTO(savedLesson);
@@ -123,15 +120,15 @@ public class CourseService : ICourseService
         return lessons.Select(LessonMapper.ToDTO).ToList();
     }
 
-    public async Task<LessonResponseDTO> UpdateLessonAsync(string name, UpdateLessonDTO updateLessonDTO, CancellationToken cancellationToken) 
+    public async Task<LessonResponseDTO> UpdateLessonAsync(Guid lessonId, UpdateLessonDTO updateLessonDTO, CancellationToken cancellationToken) 
     { 
         if(updateLessonDTO == null )
             throw new ArgumentNullException(nameof(updateLessonDTO));
 
-        if (name == null)
-            throw new ArgumentException("Name cannot be empty");
+        if (lessonId == Guid.Empty)
+            throw new ArgumentNullException(nameof(lessonId));
 
-        var lessonToUpdate = await _lessonRepository.GetByNameAsync(name, cancellationToken);
+        var lessonToUpdate = await _lessonRepository.GetByIdAsync(lessonId, cancellationToken);
         if (lessonToUpdate == null)
             throw new KeyNotFoundException(nameof(lessonToUpdate));
 
@@ -141,11 +138,9 @@ public class CourseService : ICourseService
         return LessonMapper.ToDTO(lessonToUpdate);
     }
 
-    public async Task<bool> DeleteLessonFromCourseAsync(Guid courseId, Guid lessonId, CancellationToken cancellationToken)
+    public async Task<bool> DeleteLessonFromCourseAsync(Guid lessonId, CancellationToken cancellationToken)
     {
-        if (courseId == Guid.Empty)
-            throw new ArgumentNullException(nameof(courseId));
-
+        
         if (lessonId == Guid.Empty)
             throw new ArgumentNullException(nameof(lessonId));
 
@@ -164,7 +159,7 @@ public class CourseService : ICourseService
 
 
 
-
+    
     public async Task<IReadOnlyList<LocationResponseDTO>> GetAllLocationsAsync(CancellationToken cancellationToken)
     {
         var locations = await _locationRepository.GetAllAsync(cancellationToken);

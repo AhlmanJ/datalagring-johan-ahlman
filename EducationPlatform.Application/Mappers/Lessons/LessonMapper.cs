@@ -23,8 +23,8 @@ public static class LessonMapper
             EndDate: entity.EndDate,
             MaxCapacity: entity.MaxCapacity,
             Enrolled: entity.NumberEnrolled,
-            CourseName: entity.Course?.Name ?? "",
-            Location: entity.Location.Name
+            Location: entity.Location.Name,
+            Instructors: entity.Instructors != null ? entity.Instructors.Where(i => !string.IsNullOrEmpty(i.Email)).Select(i => i.Email!).ToList(): null
         );
 
     public static LessonsEntity ToEntity(CreateLessonDTO dto)   
@@ -63,16 +63,6 @@ public static class LessonMapper
         if (dto.MaxCapacity != entity.MaxCapacity)
         {
             entity.MaxCapacity = dto.MaxCapacity;
-        }
-
-        if (dto.CourseName is not null)
-        {
-            entity.Course.Name = dto.CourseName;
-        }
-
-        if (dto.Location!= entity.Location.Name)
-        {
-            entity.Location.Name = dto.Location;
         }
 
         return dto;

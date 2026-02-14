@@ -10,22 +10,24 @@ public class InstructorsEntity
     public string Email { get; set; } = null!;
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
+    public string Expertise { get; set; } = string.Empty;
     public byte[] Concurrency { get; set; } = null!;
     public virtual ICollection<LessonsEntity> Lessons { get; set; } = [];
-    public virtual ICollection<ExpertisesEntity> Expertises { get; set; } = []; // Many-to-many relationship to ExpertiseEntity.
 
 
     public InstructorsEntity() { }
 
-    public InstructorsEntity (string email, string firstname, string lastname)
+    public InstructorsEntity (string email, string firstname, string lastname, string expertise)
     {
         ValidateEmail(email);
         ValidateFirstName(firstname);
         ValidateLastName(lastname);
+        ValidateExpertise(expertise);
 
         this.Email = email;
         this.FirstName = firstname;
         this.LastName = lastname;
+        this.Expertise = expertise;
     }
 
     public void ValidateEmail(string email) 
@@ -49,5 +51,11 @@ public class InstructorsEntity
     {
         if (string.IsNullOrWhiteSpace(lastname))
             throw new ArgumentException("Last name is required");
+    }
+
+    public void ValidateExpertise(string expertise)
+    {
+        if (string.IsNullOrWhiteSpace(expertise))
+            throw new ArgumentException("Expertise is required");
     }
 }

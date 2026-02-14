@@ -1,4 +1,5 @@
-﻿namespace EducationPlatform.Application.DTOs.Locations;
+﻿
+namespace EducationPlatform.Application.DTOs.Locations;
 
 public sealed record LocationResponseDTO
     (
