@@ -4,5 +4,6 @@ public sealed record CreateInstructorDTO
     (
         string FirstName,
         string LastName,
-        string Email
+        string Email,
+        string Expertise
     );

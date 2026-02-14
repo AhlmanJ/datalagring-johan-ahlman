@@ -2,25 +2,24 @@
 // See notes in the code for "CreateExpertiseToInstructorAsync", row 91.
 
 using EducationPlatform.Application.Abstractions.Persistence;
-using EducationPlatform.Application.DTOs.Expertises;
 using EducationPlatform.Application.DTOs.Instructors;
-using EducationPlatform.Application.Mappers.Expertises;
 using EducationPlatform.Application.Mappers.Instructors;
 using EducationPlatform.Application.ServiceInterfaces;
 using EducationPlatform.Domain.Interfaces;
+using EducationPlatform.Domain.Repositories;
 
 namespace EducationPlatform.Application.Services;
 
 public class InstructorService : IInstructorService
 {
     private readonly IInstructorRepository _instructorRepository;
-    private readonly IExpertiseRepository _expertiseRepository;
+    private readonly ILessonRepository _lessonRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public InstructorService(IInstructorRepository instructorRepository, IExpertiseRepository expertiseRepository, IUnitOfWork unitOfWork)
+    public InstructorService(IInstructorRepository instructorRepository,ILessonRepository lessonRepository, IUnitOfWork unitOfWork)
     {
         _instructorRepository = instructorRepository;
-        _expertiseRepository = expertiseRepository;
+        _lessonRepository = lessonRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -30,7 +29,7 @@ public class InstructorService : IInstructorService
             throw new ArgumentNullException("Instructor cannot be empty. Please try again.");
 
         var allreadyExists = await _instructorRepository.GetByEmailAsync(instructorDTO.Email, cancellationToken);
-        if (instructorDTO.Email.Any())
+        if (!instructorDTO.Email.Any())
             throw new ArgumentException("Instructor allready exist. Please try again.");
 
 
@@ -53,14 +52,37 @@ public class InstructorService : IInstructorService
         return InstructorMapper.ToDTO(instructor);
     }
 
-    public async Task<IReadOnlyList<AllInstructorsResponseDTO>> GetAllInstructorsAsync(CancellationToken cancellationToken)
+    public async Task<bool> EnrollInstructorToLessonAsync(Guid lessonId, Guid instructorId, CancellationToken cancellationToken)
+    {
+        if (lessonId == Guid.Empty)
+            throw new ArgumentNullException(nameof(lessonId));
+
+        if(instructorId == Guid.Empty)
+            throw new ArgumentNullException(nameof(instructorId));
+
+        var lesson = await _lessonRepository.GetByIdAsync(lessonId, cancellationToken);
+            if(lesson == null)
+            return false;
+
+        var instructor = await _instructorRepository.GetByIdAsync(instructorId, cancellationToken);
+            if(instructor == null)
+            return false;
+
+        lesson.Instructors.Add(instructor);
+
+        await _lessonRepository.UpdateAsync(lesson, cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken);
+
+        return true;
+    }   
+
+    public async Task<IReadOnlyList<InstructorResponseDTO>> GetAllInstructorsAsync(CancellationToken cancellationToken)
     {
         var instructors = await _instructorRepository.GetAllAsync(cancellationToken);
-
         if(instructors.Count == 0)
-            return new List<AllInstructorsResponseDTO>();
+            return new List<InstructorResponseDTO>();
 
-        return instructors.Select(InstructorMapper.AllToDTO).ToList();
+        return instructors.Select(InstructorMapper.ToDTO).ToList();
     }
 
     public async Task<InstructorResponseDTO> UpdateInstructorAsync(Guid id, UpdateInstructorDTO instructorDTO, CancellationToken cancellationToken)
@@ -91,39 +113,6 @@ public class InstructorService : IInstructorService
             return false;
 
         await _instructorRepository.DeleteAsync(instructorToDelete, cancellationToken);
-        await _unitOfWork.CommitAsync(cancellationToken);
-
-        return true;
-    }
-
-
-
-
-    public async Task<ExpertiseResponseDTO> CreateExpertiseToInstructorAsync(Guid instructorId, CreateExpertiseDTO expertiseDTO, CancellationToken cancellationToken)
-    {
-        var instructor = await _instructorRepository.GetByIdAsync(instructorId, cancellationToken);
-        if (instructor == null)
-            throw new KeyNotFoundException($"Could not find a instructor with Id: {instructorId}");
-
-        var savedExpertise = ExpertiseMapper.ToEntity(expertiseDTO);
-        // Explained to me by chatGPT that EF Core needs to know the many-to-many relation. Otherwise the expertise will be created but not related to the instructor.
-        instructor.Expertises.Add(savedExpertise); // Adding the instructor to the expertise.
-        savedExpertise.Instructors.Add(instructor); // Adding the expertise to the instructor.
-
-        // Deleted " await _expertiseRepository.CreateAsync(savedExpertise, cancellationToken); " Because i learned that EF Core keeps track on this throu the Join-Table.
-
-        await _unitOfWork.CommitAsync(cancellationToken);
-
-        return ExpertiseMapper.ToDTO(savedExpertise);
-    }
-
-    public async Task<bool> DeleteExpertiseFromInstructorAsync(Guid instructorId, Guid id, CancellationToken cancellationToken)
-    {
-        var expertiseToDelete = await _expertiseRepository.GetByIdAsync(id, cancellationToken);
-        if(expertiseToDelete == null)
-            return false;
-
-        await _expertiseRepository.DeleteAsync(expertiseToDelete, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return true;

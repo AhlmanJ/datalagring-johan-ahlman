@@ -5,6 +5,6 @@ public sealed record UpdateInstructorDTO
         Guid Id,
         string? FirstName,
         string? LastName,
-        string? Email,
+        string? Expertise,
         Byte[] Concurrency
     );

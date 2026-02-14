@@ -4,5 +4,6 @@ public sealed record AllInstructorsResponseDTO
 (
     string Email,
     string FirstName,
-    string LastName
+    string LastName,
+    string Expertise
 );

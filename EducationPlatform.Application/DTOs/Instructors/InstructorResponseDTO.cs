@@ -2,8 +2,9 @@
 
 public sealed record InstructorResponseDTO
     (
+        Guid InstructorId,
         string FirstName,
         string LastName,
         string Email,
-        IReadOnlyList<string>? Subject = null
+        string Expertise
     );

@@ -13,7 +13,6 @@ public class InstructorRepository(EducationPlatformDbContext context) : BaseRepo
     public async Task<InstructorsEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return await _table
-            .Include(e => e.Expertises)
             .Include(l => l.Lessons)
             .FirstOrDefaultAsync(i => i.Email == email, cancellationToken);
     }
@@ -21,7 +20,6 @@ public class InstructorRepository(EducationPlatformDbContext context) : BaseRepo
     public async Task<InstructorsEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _table
-            .Include(e => e.Expertises)
             .Include(l => l.Lessons)
             .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
     }

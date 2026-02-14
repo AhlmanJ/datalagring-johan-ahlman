@@ -8,6 +8,6 @@ public sealed record LessonResponseDTO
         DateTime EndDate, 
         int MaxCapacity,
         int Enrolled,
-        string CourseName,
-        string Location
+        string Location,
+        IReadOnlyList<string>? Instructors = null
     );
