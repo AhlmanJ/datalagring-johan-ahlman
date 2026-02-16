@@ -20,9 +20,9 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         var (statusCode, title, detail) = exception switch // Declaring what information to return to frontend when Exception been thrown.
         {
-            ArgumentNullException => (StatusCodes.Status400BadRequest, "Bad Request", "Input cannot be empty."),    // Mapping all the Exceptions i got in my solution
-            ArgumentException => (StatusCodes.Status400BadRequest, "Bad Request", "Invalid input. Please try again."),
-            KeyNotFoundException => (StatusCodes.Status404NotFound, "Not Found", "Request Not Found"),
+            ArgumentNullException => (StatusCodes.Status400BadRequest, "Bad Request", exception.Message),    // Mapping all the Exceptions i got in my solution
+            ArgumentException => (StatusCodes.Status400BadRequest, "Bad Request", exception.Message),
+            KeyNotFoundException => (StatusCodes.Status404NotFound, "Not Found", exception.Message),
 
             _ => (StatusCodes.Status500InternalServerError, "Server Error", "An unexpected error occured.")
         };

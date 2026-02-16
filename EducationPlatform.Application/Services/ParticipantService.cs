@@ -17,12 +17,14 @@ public class ParticipantService : IParticipantService
 {
     private readonly IParticipantRepository _participantRepository;
     private readonly IPhonenumberRepository _phonenumberRepository;
+    private readonly IEnrollmentRepository _enrollmentRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ParticipantService(IParticipantRepository ParticipantRepository, IPhonenumberRepository PhonenumberRepository, IUnitOfWork unitOfWork)
+    public ParticipantService(IParticipantRepository participantRepository, IPhonenumberRepository phonenumberRepository, IEnrollmentRepository enrollmentRepository, IUnitOfWork unitOfWork)
     {
-        _participantRepository = ParticipantRepository;
-        _phonenumberRepository = PhonenumberRepository;
+        _participantRepository = participantRepository;
+        _phonenumberRepository = phonenumberRepository;
+        _enrollmentRepository = enrollmentRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -30,6 +32,13 @@ public class ParticipantService : IParticipantService
     {
         if(participantDTO == null)
             throw new ArgumentNullException(nameof(participantDTO));
+
+        var participants = await _participantRepository.GetAllAsync(cancellationToken);
+        var email = participants.FirstOrDefault()?.Email;
+
+        if (participantDTO.Email == email)
+            throw new ArgumentException($"Participant with the email address - {participantDTO.Email} - already exists. Please try again.");
+      
 
         var savedParticipant = ParticipantMapper.ToEntity(participantDTO);
         await _participantRepository.CreateAsync(savedParticipant, cancellationToken);
@@ -50,14 +59,14 @@ public class ParticipantService : IParticipantService
         return ParticipantMapper.ToDTO(participant);
     }
 
-    public async Task<IReadOnlyList<AllParticipantsResponseDTO>> GetAllParticipantsAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<ParticipantResponseDTO>> GetAllParticipantsAsync(CancellationToken cancellationToken)
     {  
-        var participants = await _participantRepository.GetAllAsync(cancellationToken);
+        var participants = await _participantRepository.GetAllParticipantsAsync(cancellationToken);
         if (participants.Count == 0)
-            return new List<AllParticipantsResponseDTO>();
+            return new List<ParticipantResponseDTO>();
 
 
-        return participants.Select(ParticipantMapper.AllToDTO).ToList();
+        return participants.Select(ParticipantMapper.ToDTO).ToList();
     }
 
     public async Task<ParticipantResponseDTO> UpdateParticipantAsync(string email, UpdateParticipantDTO participantDTO, CancellationToken cancellationToken)
@@ -87,6 +96,14 @@ public class ParticipantService : IParticipantService
         if(participantToDelte == null)
             return false;
 
+        var participantId = participantToDelte.Id;
+
+        var enrollments = await _enrollmentRepository.GetAllAsync(cancellationToken);
+        var enrolledParticipant = enrollments.Any(p => p.ParticipantId == participantId);
+
+        if (enrolledParticipant)
+            throw new ArgumentException("You cannot delete a enrolled participant. Please try again.");
+
         await _participantRepository.DeleteAsync(participantToDelte!, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
@@ -115,16 +132,16 @@ public class ParticipantService : IParticipantService
         return PhonenumberMapper.ToDTO(savedPhonenumber);
     }
 
-    public async Task<bool> DeletePhonenumberFromParticipantAsync(Guid participantId, Guid phonenumberId, CancellationToken cancellationToken)
+    public async Task<bool> DeletePhonenumberFromParticipantAsync(Guid participantId, string phonenumber, CancellationToken cancellationToken)
     {
         if (participantId == Guid.Empty)
             throw new ArgumentNullException(nameof(participantId));
 
-        if(phonenumberId == Guid.Empty)
-            throw new ArgumentNullException(nameof(phonenumberId));
+        if(phonenumber == null)
+            throw new ArgumentNullException(nameof(phonenumber));
 
         var phonenumbers = await _phonenumberRepository.GetByParticipantAsync(participantId, cancellationToken); // Get all phonenumber for a participant.
-        var phonenumberToDelete = phonenumbers.FirstOrDefault(p => p.Id == phonenumberId); // Find phonenumber to delete.
+        var phonenumberToDelete = phonenumbers.FirstOrDefault(p => p.Phonenumber == phonenumber); // Find phonenumber to delete.
         if (phonenumberToDelete == null)
             return false;
 

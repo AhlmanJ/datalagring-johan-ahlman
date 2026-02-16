@@ -11,6 +11,7 @@ using EducationPlatform.Application.Mappers.Locations;
 using EducationPlatform.Application.ServiceInterfaces;
 using EducationPlatform.Domain.Interfaces;
 using EducationPlatform.Domain.Repositories;
+using System.ComponentModel.DataAnnotations;
 
 namespace EducationPlatform.Application.Services;
 
@@ -20,13 +21,15 @@ public class CourseService : ICourseService
     private readonly ILocationRepository _locationRepository;
     private readonly ILessonRepository _lessonRepository;
     private readonly IInstructorRepository _instructorRepository;
+    private readonly IEnrollmentRepository _enrollmentRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CourseService(ICourseRepository courseRepository,ILocationRepository locationRepository, ILessonRepository lessonRepository, IInstructorRepository instructorRepository, IUnitOfWork unitOfWork)
+    public CourseService(ICourseRepository courseRepository,ILocationRepository locationRepository, ILessonRepository lessonRepository, IInstructorRepository instructorRepository, IEnrollmentRepository enrollmentRepository, IUnitOfWork unitOfWork)
     {  _courseRepository = courseRepository;
        _locationRepository = locationRepository;
        _lessonRepository = lessonRepository;
        _instructorRepository = instructorRepository;
+       _enrollmentRepository = enrollmentRepository;
        _unitOfWork = unitOfWork;
     }
 
@@ -37,7 +40,7 @@ public class CourseService : ICourseService
 
         var checkCourse = await _courseRepository.ExistsAsync(c => c.Name == courseDTO.Name, cancellationToken);
         if (checkCourse)
-            throw new ArgumentException($"A course with the name {checkCourse} already exists!");
+            throw new ArgumentException($"A course with the name - {courseDTO.Name} - already exists!");
 
         var savedCourse = CourseMapper.ToEntity(courseDTO);
         await _courseRepository.CreateAsync(savedCourse, cancellationToken);
@@ -81,6 +84,12 @@ public class CourseService : ICourseService
         if (courseToDelete == null)
             return false;
 
+        var lessons = await _lessonRepository.GetAllAsync(cancellationToken);
+        var courseWithLesson = lessons.Any(c => c.CourseId == id);
+
+        if (courseWithLesson)
+            throw new AggregateException("You must delete all lessons related to the course before deleting a course!");
+
         await _courseRepository.DeleteAsync(courseToDelete, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
@@ -98,6 +107,10 @@ public class CourseService : ICourseService
 
         if (lessonDTO == null)
             throw new ArgumentNullException(nameof(lessonDTO));
+
+        var checkLesson = await _lessonRepository.ExistsAsync(l => l.Name == lessonDTO.Name, cancellationToken);
+        if (checkLesson)
+            throw new ArgumentException($"A lesson with the name - {lessonDTO.Name} - already exists!");
 
         var savedLesson = LessonMapper.ToEntity(lessonDTO);
         savedLesson.CourseId = courseId;
@@ -147,10 +160,19 @@ public class CourseService : ICourseService
         var lessonToDelete = await _lessonRepository.GetByIdAsync(lessonId,  cancellationToken);
         if (lessonToDelete == null)
             return false;
-        
-        
+
+        var enrollments = await _enrollmentRepository.GetAllAsync(cancellationToken);
+        var lessonsWithEnrollments = enrollments.Any(l => l.LessonsId == lessonId);
+
+        if (lessonsWithEnrollments)
+            throw new ArgumentException("You must delete all enrollments before deleting a lesson!");
+
+        var location = lessonToDelete.Location; // Deletes the location for each lesson.
 
         await _lessonRepository.DeleteAsync(lessonToDelete, cancellationToken);
+
+        await _locationRepository.DeleteAsync(location, cancellationToken);
+
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return true;
@@ -177,6 +199,12 @@ public class CourseService : ICourseService
         var locationToDelete = await _locationRepository.GetByNameAsync(locationName, cancellationToken);
         if (locationToDelete == null)
             return false;
+
+        var lessons = await _lessonRepository.GetAllAsync(cancellationToken);
+        var lessonWithLocation = lessons.Any(l => l.Name == locationName);
+
+        if (lessonWithLocation)
+            throw new ArgumentException("You must delete the lesson before deleting the location!");
 
         await _locationRepository.DeleteAsync(locationToDelete, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);

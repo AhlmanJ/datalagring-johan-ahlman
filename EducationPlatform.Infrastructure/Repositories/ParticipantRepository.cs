@@ -7,6 +7,13 @@ namespace EducationPlatform.Infrastructure.Repositories;
 
 public class ParticipantRepository(EducationPlatformDbContext context) : BaseRepository<ParticipantsEntity>(context), IParticipantRepository
 {
+    public async Task<List<ParticipantsEntity>> GetAllParticipantsAsync(CancellationToken cancellationToken)
+    {
+        return await _table
+            .Include(p => p.Phonenumbers)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<ParticipantsEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return await _table
@@ -25,4 +32,5 @@ public class ParticipantRepository(EducationPlatformDbContext context) : BaseRep
                 .ThenInclude(s => s.Status)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
+
 }

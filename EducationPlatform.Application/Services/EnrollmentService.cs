@@ -104,6 +104,7 @@ public class EnrollmentService : IEnrollmentService
         lesson.NumberEnrolled--;
         participant.IsEnrolled = false;
         
+        
         await _enrollmentRepository.DeleteAsync(enrollmentToDelete, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
