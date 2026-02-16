@@ -164,15 +164,6 @@ courses.MapDelete("/lessons/{lessonId:guid}", async (Guid lessonId, ICourseServi
      return result ? Results.NoContent() : Results.BadRequest();
 });
 
-   
-courses.MapDelete("/locations/{locationName}", async (string locationName, ICourseService courseService, CancellationToken ct) =>
-{
-    var result = await courseService.DeleteLocationFromCourseAsync(locationName, ct);
-
-    return result ? Results.NoContent() : Results.BadRequest();
-});
-
-
 #endregion
 
 
@@ -303,5 +294,11 @@ participants.MapDelete("/{email}", async (string email, IParticipantService part
     return result ? Results.NoContent() : Results.BadRequest();
 });
 
+participants.MapDelete("/{participantId:guid}/{phonenumber}", async (Guid participantId, string phonenumber, IParticipantService participantService, CancellationToken ct) =>
+{
+    var result = await participantService.DeletePhonenumberFromParticipantAsync(participantId, phonenumber,ct);
+
+    return result ? Results.NoContent() : Results.BadRequest();
+});
 #endregion
 app.Run();

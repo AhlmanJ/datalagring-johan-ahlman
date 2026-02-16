@@ -22,14 +22,6 @@ public static class ParticipantMapper
             .ToList() : null
         );
 
-    public static AllParticipantsResponseDTO AllToDTO(ParticipantsEntity entity) 
-        => new AllParticipantsResponseDTO
-        (
-            ParticipantId: entity.Id,
-            FirstName: entity.FirstName,
-            LastName: entity.LastName,
-            Email: entity.Email
-        );
 
     //Here I got help from ChatGPT on how to enable a user to add phone numbers to a Participant.
     public static ParticipantsEntity ToEntity(CreateParticipantDTO dto)
