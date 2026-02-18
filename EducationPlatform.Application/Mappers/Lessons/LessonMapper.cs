@@ -31,14 +31,14 @@ public static class LessonMapper
     {
         var lesson = new LessonsEntity
         (
-            dto.Name,
+            dto.Name.Trim().ToLower(),
             dto.StartDate,
             dto.EndDate,
             dto.MaxCapacity,
-            dto.LocationName
+            dto.LocationName.Trim().ToLower()
         );
 
-        lesson.Location = new LocationsEntity(dto.LocationName);
+        lesson.Location = new LocationsEntity(dto.LocationName.Trim().ToLower());
 
         return lesson;
     }
@@ -47,7 +47,7 @@ public static class LessonMapper
     {
         if (dto.Name is not null)
         {
-            entity.Name = dto.Name;
+            entity.Name = dto.Name.Trim().ToLower();
         }
 
         if (dto.StartDate != entity.StartDate)

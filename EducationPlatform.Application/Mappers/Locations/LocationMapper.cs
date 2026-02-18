@@ -15,7 +15,7 @@ public static class LocationMapper
     {
         var locationName = new LocationsEntity
             (
-                dto.Name
+                dto.Name.Trim().ToLower()
             );
 
         return locationName;

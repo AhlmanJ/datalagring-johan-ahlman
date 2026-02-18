@@ -31,10 +31,10 @@ public static class InstructorMapper
     {
         var instructor = new InstructorsEntity
             (
-                dto.Email,
-                dto.FirstName,
-                dto.LastName,
-                dto.Expertise
+                dto.Email.Trim().ToLower(),
+                dto.FirstName.Trim().ToLower(),
+                dto.LastName.Trim().ToLower(),
+                dto.Expertise.Trim().ToLower()
             );
 
         return instructor;
@@ -46,17 +46,17 @@ public static class InstructorMapper
 
         if (dto.FirstName is not null)
         {
-            entity.FirstName = dto.FirstName;
+            entity.FirstName = dto.FirstName.Trim().ToLower();
         }
 
         if (dto.LastName is not null)
         {
-            entity.LastName = dto.LastName;
+            entity.LastName = dto.LastName.Trim().ToLower();
         }
 
         if(dto.Expertise is not null)
         { 
-            entity.Expertise = dto.Expertise; 
+            entity.Expertise = dto.Expertise.Trim().ToLower(); 
         }
 
         entity.Concurrency = dto.Concurrency;

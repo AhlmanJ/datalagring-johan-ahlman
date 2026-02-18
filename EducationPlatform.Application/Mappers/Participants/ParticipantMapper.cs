@@ -28,15 +28,15 @@ public static class ParticipantMapper
     {
         var participant = new ParticipantsEntity
             (
-                dto.FirstName,
-                dto.LastName,
-                dto.Email
+                dto.FirstName.Trim().ToLower(),
+                dto.LastName.Trim().ToLower(),
+                dto.Email.Trim().ToLower()
             );
 
         participant.Phonenumbers = dto.Phonenumber != null // Checks if the DTO has a phone number or if it is Null.
                 ? dto.Phonenumber!
                 .Where(Phonenumbers => !string.IsNullOrEmpty(Phonenumbers))
-                .Select(Phonenumbers => new PhonenumbersEntity { Phonenumber = Phonenumbers }) // for each string in the list, a new entity PhonenumbersEntity is created
+                .Select(Phonenumbers => new PhonenumbersEntity { Phonenumber = Phonenumbers.Trim().ToLower() }) // for each string in the list, a new entity PhonenumbersEntity is created
                 .ToList() : new List<PhonenumbersEntity>(); // Convert what we get from .Select into a List
 
         return participant;
@@ -46,12 +46,12 @@ public static class ParticipantMapper
     {
         if (dto.FirstName is not null)
         {
-            entity.FirstName = dto.FirstName;
+            entity.FirstName = dto.FirstName.Trim().ToLower();
         }
 
         if (dto.LastName is not null)
         {
-            entity.LastName = dto.LastName;
+            entity.LastName = dto.LastName.Trim().ToLower();
         }
     }
 }

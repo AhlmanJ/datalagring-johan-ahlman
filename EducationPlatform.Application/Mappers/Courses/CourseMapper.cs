@@ -21,8 +21,8 @@ public static class CourseMapper
     // From DTO to Entity.
     public static CoursesEntity ToEntity(CreateCourseDTO dto)
     {
-        var course = new CoursesEntity(dto.Name); // The properties that are required and that should be validated are set in the entity.
-        course.ValidateDescription(dto.Description); // Optional properties are run through their own validation method if entered from the frontend.
+        var course = new CoursesEntity(dto.Name.Trim().ToLower()); // The properties that are required and that should be validated are set in the entity.
+        course.ValidateDescription(dto.Description.Trim().ToLower()); // Optional properties are run through their own validation method if entered from the frontend.
 
         return course;
     }
@@ -32,12 +32,12 @@ public static class CourseMapper
     {
         if (dto.Name is not null)
         {
-            entity.Name = dto.Name;
+            entity.Name = dto.Name.Trim().ToLower();
         }
 
         if (dto.Description is not null)
         {
-            entity.Description = dto.Description;
+            entity.Description = dto.Description.Trim().ToLower();
         }
     }
 }

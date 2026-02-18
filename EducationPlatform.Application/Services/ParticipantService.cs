@@ -50,7 +50,7 @@ public class ParticipantService : IParticipantService
     public async Task<ParticipantResponseDTO> GetParticipantByEmailAsync(string email, CancellationToken cancellationToken)
     {
         if(email == null)
-            throw new ArgumentNullException("Email cannot be empty");
+            throw new ArgumentException("Email cannot be empty");
 
         var participant = await _participantRepository.GetByEmailAsync(email, cancellationToken);
         if (participant == null)
@@ -72,10 +72,10 @@ public class ParticipantService : IParticipantService
     public async Task<ParticipantResponseDTO> UpdateParticipantAsync(string email, UpdateParticipantDTO participantDTO, CancellationToken cancellationToken)
     {
         if (email == null)
-            throw new ArgumentNullException("Email cannot be empty. Please try again.");
+            throw new ArgumentException("Email cannot be empty. Please try again.");
 
         if(participantDTO == null)  
-            throw new ArgumentNullException($"Could not find a participant with Email address: {email}");
+            throw new ArgumentNullException(nameof(participantDTO));
 
         var participantToUpdate = await _participantRepository.GetByEmailAsync(email, cancellationToken);
         if(participantToUpdate == null)
@@ -90,7 +90,7 @@ public class ParticipantService : IParticipantService
     public async Task<bool> DeleteParticipantAsync(string email, CancellationToken cancellationToken)
     {
         if(email == null)
-            throw new ArgumentNullException("Email cannot be empty. Please try again.");
+            throw new ArgumentException("Email cannot be empty. Please try again.");
 
         var participantToDelte = await _participantRepository.GetByEmailAsync(email, cancellationToken);
         if(participantToDelte == null)
