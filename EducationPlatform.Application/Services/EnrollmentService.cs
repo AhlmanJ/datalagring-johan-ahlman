@@ -38,7 +38,7 @@ public class EnrollmentService : IEnrollmentService
 
         var participant = await _participantRepository.GetByIdAsync(participantId, cancellationToken);
         if(participant == null) 
-            throw new KeyNotFoundException("No participant found");
+            throw new KeyNotFoundException($"No participant with Id:{participantId} found.");
         
         var lesson = await _lessonRepository.GetByIdAsync(lessonsId, cancellationToken);
         if(lesson == null)
@@ -87,7 +87,7 @@ public class EnrollmentService : IEnrollmentService
             throw new ArgumentNullException(nameof(participantId));
 
         if (lessonName == null)
-            throw new ArgumentNullException("Lesson name cannot be empty.");
+            throw new ArgumentException("Lesson name cannot be empty.");
 
         var enrollmentToDelete = await _enrollmentRepository.GetByIdAsync(enrollmentId, cancellationToken);
         if (enrollmentToDelete == null)

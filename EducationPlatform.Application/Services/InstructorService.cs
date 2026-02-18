@@ -26,10 +26,10 @@ public class InstructorService : IInstructorService
     public async Task<InstructorResponseDTO> CreateInstructorAsync(CreateInstructorDTO instructorDTO, CancellationToken cancellationToken)
     {
         if (instructorDTO == null)
-            throw new ArgumentNullException("Instructor cannot be empty. Please try again.");
+            throw new ArgumentException("Instructor cannot be empty. Please try again.");
 
-        var allreadyExists = await _instructorRepository.GetByEmailAsync(instructorDTO.Email, cancellationToken);
-        if (!instructorDTO.Email.Any())
+        var allreadyExists = await _instructorRepository.ExistsAsync(e => e.Email == instructorDTO.Email, cancellationToken);
+        if (allreadyExists)
             throw new ArgumentException("Instructor allready exist. Please try again.");
 
 
@@ -43,11 +43,11 @@ public class InstructorService : IInstructorService
     public async Task<InstructorResponseDTO> GetInstructorByEmailAsync(string email, CancellationToken cancellationToken)
     {
         if(email == null)
-            throw new ArgumentNullException("Email cannot be empty. Please try again.");
+            throw new ArgumentException("Email cannot be empty. Please try again.");
 
         var instructor = await _instructorRepository.GetByEmailAsync(email, cancellationToken);
         if (instructor == null) 
-            throw new KeyNotFoundException("Could not find a Instructor with that Email address");
+            throw new KeyNotFoundException($"Could not find a Instructor with Email address {email}. Please try again.");
 
         return InstructorMapper.ToDTO(instructor);
     }

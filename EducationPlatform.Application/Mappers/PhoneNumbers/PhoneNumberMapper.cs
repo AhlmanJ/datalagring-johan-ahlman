@@ -16,7 +16,7 @@ public static class PhonenumberMapper
     {
         var phonenumber = new PhonenumbersEntity
             (
-                dto.Phonenumber
+                dto.Phonenumber.Trim().ToLower()
             );
 
         return phonenumber;

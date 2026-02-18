@@ -11,7 +11,6 @@ using EducationPlatform.Application.Mappers.Locations;
 using EducationPlatform.Application.ServiceInterfaces;
 using EducationPlatform.Domain.Interfaces;
 using EducationPlatform.Domain.Repositories;
-using System.ComponentModel.DataAnnotations;
 
 namespace EducationPlatform.Application.Services;
 
@@ -36,7 +35,7 @@ public class CourseService : ICourseService
     public async Task<CourseResponseDTO> CreateCourseAsync(CreateCourseDTO courseDTO, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(courseDTO.Name))
-            throw new ArgumentNullException($"{courseDTO.Name} cannot be empty.");
+            throw new ArgumentException($"{courseDTO.Name} cannot be empty.");
 
         var checkCourse = await _courseRepository.ExistsAsync(c => c.Name == courseDTO.Name, cancellationToken);
         if (checkCourse)
@@ -59,12 +58,12 @@ public class CourseService : ICourseService
     }
 
     // -----------------  Help by ChatGPT -------------------
-    public async Task<CourseResponseDTO> UpdateCourseAsync(Guid Id, UpdateCourseDTO courseDTO, CancellationToken cancellationToken)
+    public async Task<CourseResponseDTO> UpdateCourseAsync(Guid id, UpdateCourseDTO courseDTO, CancellationToken cancellationToken)
     {
-        if (courseDTO.Name == null)
-            throw new ArgumentNullException(nameof(courseDTO.Name));
+        if (id == Guid.Empty)
+            throw new ArgumentNullException(nameof(id));
 
-        var courseToUpdate = await _courseRepository.GetByIdAsync(Id, cancellationToken);
+        var courseToUpdate = await _courseRepository.GetByIdAsync(id, cancellationToken);
         if (courseToUpdate == null)
             throw new KeyNotFoundException(nameof(courseToUpdate));
 
@@ -88,7 +87,7 @@ public class CourseService : ICourseService
         var courseWithLesson = lessons.Any(c => c.CourseId == id);
 
         if (courseWithLesson)
-            throw new AggregateException("You must delete all lessons related to the course before deleting a course!");
+            throw new ArgumentException("You must delete all lessons related to the course before deleting a course!");
 
         await _courseRepository.DeleteAsync(courseToDelete, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
@@ -107,6 +106,12 @@ public class CourseService : ICourseService
 
         if (lessonDTO == null)
             throw new ArgumentNullException(nameof(lessonDTO));
+
+        if (lessonDTO.MaxCapacity < 1)
+            throw new ArgumentException("Capacity cannot be less than 1. Please try again.");
+
+        if (lessonDTO.StartDate > lessonDTO.EndDate)
+            throw new ArgumentException("The lesson end date cannot be before the start date. Please try again.");
 
         var checkLesson = await _lessonRepository.ExistsAsync(l => l.Name == lessonDTO.Name, cancellationToken);
         if (checkLesson)
@@ -194,7 +199,7 @@ public class CourseService : ICourseService
     public async Task<bool> DeleteLocationFromCourseAsync(string locationName, CancellationToken cancellationToken)
     {
         if(locationName == null)
-            throw new ArgumentNullException("Location name cannot be empty. Please try again.");
+            throw new ArgumentException("Location name cannot be empty. Please try again.");
 
         var locationToDelete = await _locationRepository.GetByNameAsync(locationName, cancellationToken);
         if (locationToDelete == null)
