@@ -1,8 +1,8 @@
 ﻿/*
  * I got help from chatGPT on how to create this service.
- * I got help with "breaking down" each code part and had it explained to me what each part does and how I should think.
- * "What do I want Service to do?", "How does the service relate DOTs?" etc... 
- * The code is partly code created by chatGPT and partly code that I learned by watching the lecture about this in school.
+ * I got help with "breaking down" each code part and had it explained to me what each part does and how i should think.
+ * "What do i want Service to do?", "How does the service relate DOTs?" etc... 
+ * The code is partly code created by chatGPT and partly code that i learned by watching the lecture about this in school.
 */
 
 using EducationPlatform.Application.Abstractions.Persistence;

@@ -1,6 +1,6 @@
 ﻿
 /* 
- * I consulted ChatGPT about how to validate a domain layer. But I also found some information about this on the internet.
+ * I consulted ChatGPT about how to validate a domain layer. But i also found some information about this on the internet.
  * I also got help from ChatGPT on how to create "Description" as an optional parameter.
 */
 
