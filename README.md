@@ -24,7 +24,7 @@ I'm studying to become a .NET Developer at EC Utbildning and this is my fourth s
 - Clone the repository to Visual Studio.
 - Download and install a server. I have been using Microsoft SQL Server 2025 Express along with SQL Server Management Studio which can be downloaded from Microsoft's website.
 - You will now have to add the server/database to the backend solution in Visual Studio:
-- In Visual Studio, klick on "View" and choose "SQL Server Object Explorer".
+- In Visual Studio, click on "View" and choose "SQL Server Object Explorer".
 - In the "SQL Server Object Explorer", click on "Add SQL Server" and select your server and it should now be connected to your solution.
 - The next step is to migrate the entities to the database (tables).
 - In Visual Stuido, klick on "Tools" and select "NuGet Package Manager" and select "Package Manager Console".
