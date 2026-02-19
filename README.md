@@ -35,7 +35,7 @@ I'm studying to become a .NET Developer at EC Utbildning and this is my fourth s
 
  - NOTE!
  - If you only want to test the Endpoints, you can run the server and start/run the backend solution in Visual Studio. When starting the solution, a console/termianl will be started were you can select a localhost.
- - hold "ctrl" + left click on: localhost:7253
+ - Hold "ctrl" + left click on: localhost:7253
  - A web page will now open.
  - Add: /swagger/index.html to the URL.
  - You should now be able to see all the endponts and test them.
