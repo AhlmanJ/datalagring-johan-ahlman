@@ -1,5 +1,5 @@
 ﻿
-// I learned that only List and other "ReadOnly" methods should have "AsNoTracking()". I was having problems with my database not updating...
+// I learned that only Lists and other "ReadOnly" methods should have "AsNoTracking()". I was having problems with my database not updating...
 
 using EducationPlatform.Domain.Entities;
 using EducationPlatform.Domain.Interfaces;

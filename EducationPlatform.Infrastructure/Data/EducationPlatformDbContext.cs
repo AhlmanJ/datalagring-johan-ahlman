@@ -1,5 +1,5 @@
 ﻿/*
- * I got help from chatGPT on how I could preset ready-made statuses for whether a participant is already booked for a lesson or not.
+ * I got help from chatGPT on how i could preset ready-made statuses for whether a participant is already booked for a lesson or not.
  * ChatGPT also helped me discover an error in the "InstructorsEntity".
  * The error was that I had copied a piece of code from my code that I had written for the "PracticipantsEntity" but forgot to change the name.
  * 

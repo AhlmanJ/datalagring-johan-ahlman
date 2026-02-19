@@ -1,12 +1,10 @@
 ﻿/*
- * I have received help from chatGPT on how to map Location and Instructors in this file but I have also had it explained to me why I should do it this way.
+ * I have received help from chatGPT on how to map Location and Instructors in this file but i have also had it explained to me why i should do it this way.
  * My idea is that a user should be able to create a lesson without being forced to add a location and an instructor directly when the lesson is created.
  * This should be optional.
  */
 
-using EducationPlatform.Application.DTOs.Instructors;
 using EducationPlatform.Application.DTOs.Lessons;
-using EducationPlatform.Application.DTOs.Locations;
 using EducationPlatform.Domain.Entities;
 
 namespace EducationPlatform.Application.Mappers.Lessons;
